@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace AntivirusLibrary
 {
-    class ProcessWorker
+    public class ProcessDange
     {
         Process Process { get; set; }
         string Path { get; set; }
         string Signature { get; set; }
-        public ProcessWorker(Process Process)
+        public ProcessDange(Process Process)
         {
             this.Process = Process;           
             Path = Process.MainModule.FileName;
@@ -27,7 +27,7 @@ namespace AntivirusLibrary
             }          
         }
 
-        ~ProcessWorker()
+        ~ProcessDange()
         {
 
         }
