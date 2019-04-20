@@ -7,13 +7,13 @@ using AntivirusLibrary.Abstracts;
 
 namespace AntivirusLibrary.Files
 {
-    class ExceptionFile:FileWithSignature
+    public class ExceptionFile
     {
-        public ExceptionFile(string path):base(path)
+        public ExceptionFile(string Path)
         {
-
+            this.Path = Path;
         }
-
+        public string Path { get; set; }
         ~ExceptionFile()
         {
 

@@ -11,7 +11,7 @@ namespace AntivirusLibrary.Abstracts
     /// <summary>
     /// Абстрактный класс файла с путем к файлу и сигнатурой
     /// </summary>
-    internal abstract class FileWithSignature : IDisposable
+    public abstract class FileWithSignature : IDisposable
     {
         /// <summary>
         /// Конструктор 
