@@ -1,6 +1,7 @@
 ﻿using Antivirus.Modeles;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using System.Windows.Input;
 
 namespace Antivirus.ViewModeles
 {
-    internal class ViewWorker : DependencyObject
+    internal class ViewWorker: INotifyPropertyChanged
     {
         private LangWorker worker;
         public ViewWorker()
@@ -45,18 +46,18 @@ namespace Antivirus.ViewModeles
         ////}
 
 
-
+        private string settingsLanguageText;
         public string SettingsLanguageText
         {
-            get { return (string)GetValue(SettingsLanguageTextProperty); }
-            set { SetValue(SettingsLanguageTextProperty, worker.UsedLanguage.SettingsLanguageText); }
+            get { return settingsLanguageText; }
+            set
+            {
+                if (value == settingsLanguageText)
+                    return;
+                settingsLanguageText = value;
+                OnPropertyChanged("SettingsLanguageText");
+            }
         }
-
-        // Using a DependencyProperty as the backing store for SettingsLanguageText.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SettingsLanguageTextProperty =
-            DependencyProperty.Register("SettingsLanguageText", typeof(string), typeof(ViewWorker), new PropertyMetadata(""));
-
-
 
         #endregion
 
@@ -71,6 +72,8 @@ namespace Antivirus.ViewModeles
         }
 
         private int indexLangItem;
+
+        
 
         public int IndexLangItem
         {
@@ -128,5 +131,13 @@ namespace Antivirus.ViewModeles
             }
         }
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

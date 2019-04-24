@@ -11,12 +11,12 @@ namespace AntivirusLibrary
 {
     public class ProcessDange
     {
-        Process Process { get; set; }
-        string Path { get; set; }
-        string Signature { get; set; }
+        private Process Process { get; set; }
+        private string Path { get; set; }
+        private string Signature { get; set; }
         public ProcessDange(Process Process)
         {
-            this.Process = Process;           
+            this.Process = Process;
             Path = Process.MainModule.FileName;
             using (MD5 md5 = MD5.Create())
             {
@@ -24,7 +24,7 @@ namespace AntivirusLibrary
                 {
                     Signature = BitConverter.ToString(md5.ComputeHash(stream));
                 }
-            }          
+            }
         }
 
         ~ProcessDange()
@@ -35,9 +35,6 @@ namespace AntivirusLibrary
         public void KillProcess()
         {
             Process.Kill();
-            Path = null;
-            Signature = null;
-            Process = null;
         }
     }
 }

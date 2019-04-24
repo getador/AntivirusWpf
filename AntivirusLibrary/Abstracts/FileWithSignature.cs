@@ -25,10 +25,14 @@ namespace AntivirusLibrary.Abstracts
                 {
                     using (Stream stream = File.OpenRead(path))
                     {
-                        Singature = BitConverter.ToString(md5.ComputeHash(stream));
+                        Signature = BitConverter.ToString(md5.ComputeHash(stream));
                         Path = path;
                     }
                 }
+            }
+            else
+            {
+                Signature = null;
             }
         }
 
@@ -39,7 +43,7 @@ namespace AntivirusLibrary.Abstracts
 
         public override string ToString()
         {
-            return $"{Path} {Singature}";
+            return $"{Path} {Signature}";
         }
         /// <summary>
         /// Удаление файла
@@ -55,10 +59,10 @@ namespace AntivirusLibrary.Abstracts
         public void Dispose()
         {
             Path = null;
-            Singature = null;
+            Signature = null;
         }
 
         public string Path { get; set; }
-        public string Singature { get; set; }
+        public string Signature { get; set; }
     }
 }

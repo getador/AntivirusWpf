@@ -7,7 +7,7 @@ using AntivirusLibrary.Abstracts;
 
 namespace AntivirusLibrary.Events
 {
-    class FindDangerEventArgs:EventArgs
+    public class FindDangerEventArgs:EventArgs
     {
         public FindDangerEventArgs(FileWithSignature dangerFile)
         {

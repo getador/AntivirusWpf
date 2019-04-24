@@ -45,7 +45,7 @@ namespace Antivirus.Modeles
 
         public static Settings LoadSettings(string path)
         {
-            Stream stream = new FileStream(Environment.CurrentDirectory + "config.cfg", FileMode.Open);
+            Stream stream = new FileStream(path, FileMode.Open);
             XmlSerializer formatter = new XmlSerializer(typeof(Settings));
             Settings ReadSettingsCFG = new Settings();
             try
