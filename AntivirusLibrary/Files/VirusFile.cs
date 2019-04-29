@@ -7,7 +7,7 @@ using AntivirusLibrary.Abstracts;
 
 namespace AntivirusLibrary.Files
 {
-    class VirusFile:FileWithSignature
+    public class VirusFile:FileWithSignature
     {
         public VirusFile(string path):base(path)
         {
