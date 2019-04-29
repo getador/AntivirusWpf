@@ -7,6 +7,7 @@ using AntivirusLibrary.Abstracts;
 
 namespace AntivirusLibrary.Files
 {
+    [Serializable]
     public class ExceptionFile
     {
         public ExceptionFile(string Path)

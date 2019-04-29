@@ -12,10 +12,10 @@ namespace Antivirus.ViewModeles
 {
     internal class ViewWorker: INotifyPropertyChanged
     {
-        private LangWorker worker;
+        private SettingsWorker worker;
         public ViewWorker()
         {
-            worker = new LangWorker();
+            worker = new SettingsWorker();
 
             SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
             ChangeInterfaceLanguage();

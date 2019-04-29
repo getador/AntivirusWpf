@@ -57,6 +57,7 @@ namespace Antivirus.Modeles
             {
                 stream.Close();
                 ReadSettingsCFG.CreateNewSettings();
+                ReadSettingsCFG.SaveSettings(path);
             }
             return ReadSettingsCFG;
         }

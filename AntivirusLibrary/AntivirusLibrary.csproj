@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AntivirusWorker.cs" />
     <Compile Include="Abstracts\FileWithSignature.cs" />
+    <Compile Include="Events\CounterChangeEventArgs.cs" />
     <Compile Include="Events\FileCheckEventArgs.cs" />
     <Compile Include="Events\FindDangerEventArgs.cs" />
     <Compile Include="EvrizmSignature.cs" />

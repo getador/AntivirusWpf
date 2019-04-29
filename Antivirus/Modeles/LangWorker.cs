@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace Antivirus.Modeles
 {
-    class LangWorker
+    class SettingsWorker
     {
         public List<string> SaveFileName { get; set; }
         public List<string> SaveFilePath { get; set; }
@@ -18,7 +18,7 @@ namespace Antivirus.Modeles
         public Language UsedLanguage { get; set; }
         public List<Language> LoadedLanguage { get; set; }
 
-        public LangWorker()
+        public SettingsWorker()
         {
             ReadLangFile();
             SettingsLoaded = new Settings(Environment.CurrentDirectory + "\\config.cfg");          

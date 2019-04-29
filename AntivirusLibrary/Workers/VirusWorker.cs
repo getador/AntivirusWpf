@@ -32,7 +32,7 @@ namespace AntivirusLibrary.Workers
             checkFileThread.Start();
         }
         public event EventHandler<FindDangerEventArgs> FindDangerEvent;
-        public event EventHandler<FileCheckEventArgs> FileChecked;
+        public event EventHandler<FileCheckEventArgs> FileCheckedEvent;
         public FileWithSignature[] FilesArray { get; set; }
         public List<VirusFile> VirusList { get; set; }
         public string SignatureString { get; set; }
@@ -56,7 +56,7 @@ namespace AntivirusLibrary.Workers
                             if (fileSignature.Contains(signature))
                             {
                                 FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
-                                FileChecked?.Invoke(this, new FileCheckEventArgs(true));
+                                FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
                                 VirusList.Add((VirusFile)FilesArray[i]);
                                 break;
                             }

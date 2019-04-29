@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AntivirusLibrary.Abstracts
-{
+{   
     /// <summary>
     /// Абстрактный класс файла с путем к файлу и сигнатурой
     /// </summary>
+    [Serializable]
     public abstract class FileWithSignature : IDisposable
     {
         /// <summary>

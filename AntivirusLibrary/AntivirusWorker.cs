@@ -96,7 +96,7 @@ namespace AntivirusLibrary
             {
                 Workers[i] = new VirusWorker(SignatureString, SignaturesArray[i]);
                 Workers[i].FindDangerEvent += AddInDangerFile;
-                Workers[i].FileChecked += Counter.ChengeElement;
+                Workers[i].FileCheckedEvent += Counter.ChengeElement;
             }
         }
         /// <summary>
