@@ -411,6 +411,12 @@
         <Button x:Name="button" Command="{Binding Minimalize_Window}" Grid.Column="1" Margin="694.001,0,29.4,0" Style="{DynamicResource ButtonMinimulizerStyle1}"/>
         <CheckBox x:Name="checkBox1" Content="CheckBox" Margin="0,0,23.2,0" Style="{DynamicResource CheckBoxSettingsStatusStyle}"/>
         <CheckBox Content="CheckBox" Margin="22.8,0,0,0" Style="{DynamicResource CheckBoxServerStatusStyle}"/>
+        <Button Content="Button" HorizontalAlignment="Left" Height="46" Margin="-0.4,111,0,0" Grid.Row="1" Style="{DynamicResource ButtonVirusMenuStyle}" VerticalAlignment="Top" Width="46"/>
+        <Button Content="Button" HorizontalAlignment="Left" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{DynamicResource ButtonExceptionMenuStyle}" VerticalAlignment="Top" Width="46"/>
+        <Button Content="Button" HorizontalAlignment="Left" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{DynamicResource ButtonDengerMenuStyle}" VerticalAlignment="Top" Width="46"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="380.7" Margin="45.6,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="754.4" Grid.ColumnSpan="2">
+            <Button Content="Button" Margin="0.2,0.2,648.8,348"/>
+        </Border>
         <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349.6" Margin="0,-349.2,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="2" Background="#FFD4C8C8" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
             <Border.RenderTransform>
                 <TransformGroup>
@@ -430,8 +436,5 @@
                 <ComboBox ItemsSource="{Binding ItemsFile}" SelectedIndex="{Binding IndexLangItem}" Grid.Column="1" HorizontalAlignment="Left" Margin="18,32,0,0" VerticalAlignment="Top" Width="99"/>
             </Grid>
         </Border>
-        <Button Content="Button" HorizontalAlignment="Left" Height="46" Margin="-0.4,111,0,0" Grid.Row="1" Style="{DynamicResource ButtonVirusMenuStyle}" VerticalAlignment="Top" Width="46"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{DynamicResource ButtonExceptionMenuStyle}" VerticalAlignment="Top" Width="46"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{DynamicResource ButtonDengerMenuStyle}" VerticalAlignment="Top" Width="46"/>
     </Grid>
 </Window>
