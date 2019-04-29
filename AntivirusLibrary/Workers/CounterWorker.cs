@@ -9,7 +9,20 @@ namespace AntivirusLibrary.Workers
 {
     public class CounterWorker
     {
-        public double Element { get; set; }
+        private double element;
+        public double Element
+        {
+            get
+            {
+                return element;
+            }
+            set
+            {
+                element = value;
+                CounterChangeEvent?.Invoke(this, new CounterChangeEventArgs(element));
+            }
+        }
+        public event EventHandler<CounterChangeEventArgs> CounterChangeEvent;
         public CounterWorker()
         {
             Element = 0;
