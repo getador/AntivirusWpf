@@ -22,11 +22,14 @@ namespace AntivirusLibrary.Workers
             VirusList = new List<VirusFile>();
             FilesArray = filesArray;
             checkFileThread = new Task(() => CheckFiles());
-            checkFileThread.Start();
         }
         public void StopScan()
         {
             checkFileThread.Dispose();
+        }
+        public void Start()
+        {
+            checkFileThread.Start();
         }
         public event EventHandler<FindDangerEventArgs> FindDangerEvent;
         public event EventHandler<FileCheckEventArgs> FileChecked;
