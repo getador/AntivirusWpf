@@ -26,7 +26,7 @@ namespace AntivirusLibrary.Abstracts
                 {
                     using (Stream stream = File.OpenRead(path))
                     {
-                        Signature = BitConverter.ToString(md5.ComputeHash(stream));
+                        Signature = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-","");
                         Path = path;
                     }
                 }
@@ -44,7 +44,7 @@ namespace AntivirusLibrary.Abstracts
 
         public override string ToString()
         {
-            return $"{Path} {Signature}";
+            return $"{Path}";
         }
         /// <summary>
         /// Удаление файла

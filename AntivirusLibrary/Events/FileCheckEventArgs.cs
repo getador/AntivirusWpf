@@ -15,7 +15,7 @@ namespace AntivirusLibrary.Events
         /// <param name="state">True для увеличения, false для уменьшения</param>
         public FileCheckEventArgs(bool state)
         {
-            State = state
+            State = state;
         }
     }
 }

@@ -126,17 +126,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Storyboard x:Key="Storyboard1">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="stackPanel">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="2.566"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="stackPanel">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="36"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="checkBox">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="90"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
         <Style x:Key="ButtonMinimulizerStyle1" TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -185,42 +174,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Storyboard x:Key="Storyboard_Copy1">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="stackPanel">
-                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="stackPanel">
-                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="checkBox">
-                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
         <Style x:Key="ButtonStyle2" TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Grid>
                             <Border Background="#FFF64F4F"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsFocused" Value="True"/>
-                            <Trigger Property="IsDefaulted" Value="True"/>
-                            <Trigger Property="IsMouseOver" Value="True"/>
-                            <Trigger Property="IsPressed" Value="True"/>
-                            <Trigger Property="IsEnabled" Value="False"/>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="ButtonServerStyle" TargetType="{x:Type Button}"/>
-        <Style x:Key="ButtonServerStyle1" TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Border Background="#FFA2A2A2"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True"/>
@@ -243,7 +202,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <Grid>
-                            <Border Background="#FFF64F4F"/>
+                            <Border>
+                                <Grid>
+                                    <Rectangle HorizontalAlignment="Left" Margin="0,0,0,0" Width="22"/>
+                                    <Image VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Source="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type CheckBox}}}" Margin="2,3,2,1"/>
+                                </Grid>
+                            </Border>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -254,7 +218,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <Grid>
-                            <Border Background="#FFA2A2A2"/>
+                            <Border>
+                                <Grid>
+                                    <Rectangle HorizontalAlignment="Left" Margin="0,0,0,0" Width="22"/>
+                                    <Image VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Source="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type CheckBox}}}" Margin="2,3,2,1"/>
+                                </Grid>
+                            </Border>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -293,6 +262,22 @@
                             <Trigger Property="IsPressed" Value="True"/>
                             <Trigger Property="IsEnabled" Value="False"/>
                         </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CustomMenuButton" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
+                                <Grid>
+                                    <Rectangle HorizontalAlignment="Left" Margin="0,0,0,0" Width="22"/>
+                                    <Image VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Source="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="5,5,5,5"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -351,19 +336,59 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Storyboard x:Key="MenuOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="stackPanel">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="150"/>
+            </DoubleAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="stackPanel">
+                <EasingThicknessKeyFrame KeyTime="0:0:0.3" Value="0,0,-104,0"/>
+            </ThicknessAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.862"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="52"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border2">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.861"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border2">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="52.4"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="MenuClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="stackPanel">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="46"/>
+            </DoubleAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="stackPanel">
+                <SplineThicknessKeyFrame KeyTime="0:0:0.3" Value="0"/>
+            </ThicknessAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border1">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border1">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border2">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border2">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Window.Resources>
     <Window.Triggers>
-        <EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="checkBox">
-            <BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="ToggleButton.Unchecked" SourceName="checkBox">
-            <BeginStoryboard x:Name="Storyboard_Copy1_BeginStoryboard" Storyboard="{StaticResource Storyboard_Copy1}"/>
-        </EventTrigger>
         <EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="checkBox1">
             <BeginStoryboard x:Name="SettingsCome_BeginStoryboard" Storyboard="{StaticResource SettingsCome}"/>
         </EventTrigger>
         <EventTrigger RoutedEvent="ToggleButton.Unchecked" SourceName="checkBox1">
             <BeginStoryboard x:Name="SettingsOut_BeginStoryboard" Storyboard="{StaticResource SettingsOut}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="checkBox">
+            <BeginStoryboard Storyboard="{StaticResource MenuOpen}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ToggleButton.Unchecked" SourceName="checkBox">
+            <BeginStoryboard x:Name="MenuClose_BeginStoryboard" Storyboard="{StaticResource MenuClose}"/>
         </EventTrigger>
     </Window.Triggers>
     <Window.DataContext>
@@ -378,7 +403,15 @@
             <RowDefinition Height="auto" MinHeight="28.8"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderThickness="1" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="754" Grid.RowSpan="2" MouseLeftButtonDown="Border_MouseLeftButtonDown" Grid.Column="1">
+        <Border x:Name="border1" BorderThickness="1" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="754" Grid.RowSpan="2" MouseLeftButtonDown="Border_MouseLeftButtonDown" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
             <Border.BorderBrush>
                 <ImageBrush/>
             </Border.BorderBrush>
@@ -386,6 +419,18 @@
                 <ImageBrush/>
             </Border.Background>
         </Border>
+        <Border x:Name="border2" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="380.7" Margin="45.6,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="754.4" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+            <Frame Content="{Binding CurrentPage}"/>
+        </Border>
+        <!--
         <StackPanel x:Name="stackPanel" Background="#FF73DCD2" Orientation="Horizontal" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
             <StackPanel.RenderTransform>
                 <TransformGroup>
@@ -396,7 +441,27 @@
                 </TransformGroup>
             </StackPanel.RenderTransform>
         </StackPanel>
+        -->
+
+        <Border x:Name="stackPanel" Background="#FF73DCD2" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2" Width="46">
+            <Grid>
+                <Button Command="{Binding OpenVirusPage}" Tag="pack://application:,,,/Images/Virus.jpg" Content="Button" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,111,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
+                <TextBlock VerticalAlignment="Top" Margin="50,125,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="Вирусы" Width="100" HorizontalAlignment="Left">
+                    <TextBlock.Background>
+                        <ImageBrush/>
+                    </TextBlock.Background>
+                </TextBlock>
+                <Button Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" HorizontalAlignment="Left" Background="Black" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
+                <Button Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
+            </Grid>
+        </Border>
         <StackPanel Orientation="Vertical" Background="#FF73DCD2" Height="29" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,0.4,0"/>
+        <Border Background="#FF73DCD2" Height="29" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,0.4,0">
+            <Grid>
+                <CheckBox x:Name="checkBox1" Content="CheckBox" Margin="0,2,23.4,-0.2" Style="{DynamicResource CheckBoxSettingsStatusStyle}" Tag="pack://application:,,,/Images/Settings.jpg"/>
+                <CheckBox Content="CheckBox" Margin="23,2,0.4,-0.2" Style="{DynamicResource CheckBoxServerStatusStyle}" Tag="pack://application:,,,/Images/Server.jpg"/>
+            </Grid>
+        </Border>
         <CheckBox x:Name="checkBox" IsChecked="False" Content="CheckBox" Margin="-0.4,0.2,0,0" Grid.Row="1" Style="{DynamicResource MenuStatusStyle1}" HorizontalAlignment="Left" Width="46" Height="45" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
             <CheckBox.RenderTransform>
                 <TransformGroup>
@@ -409,14 +474,6 @@
         </CheckBox>
         <Button x:Name="button1" Content="Button" Style="{DynamicResource ButtonStyle1}"  Command="{Binding Exit_Click}" HorizontalAlignment="Right" Width="29" Grid.Column="1"/>
         <Button x:Name="button" Command="{Binding Minimalize_Window}" Grid.Column="1" Margin="694.001,0,29.4,0" Style="{DynamicResource ButtonMinimulizerStyle1}"/>
-        <CheckBox x:Name="checkBox1" Content="CheckBox" Margin="0,0,23.2,0" Style="{DynamicResource CheckBoxSettingsStatusStyle}"/>
-        <CheckBox Content="CheckBox" Margin="22.8,0,0,0" Style="{DynamicResource CheckBoxServerStatusStyle}"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="46" Margin="-0.4,111,0,0" Grid.Row="1" Style="{DynamicResource ButtonVirusMenuStyle}" VerticalAlignment="Top" Width="46"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{DynamicResource ButtonExceptionMenuStyle}" VerticalAlignment="Top" Width="46"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{DynamicResource ButtonDengerMenuStyle}" VerticalAlignment="Top" Width="46"/>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="380.7" Margin="45.6,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="754.4" Grid.ColumnSpan="2">
-            <Button Content="Button" Margin="0.2,0.2,648.8,348"/>
-        </Border>
         <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349.6" Margin="0,-349.2,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="2" Background="#FFD4C8C8" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
             <Border.RenderTransform>
                 <TransformGroup>

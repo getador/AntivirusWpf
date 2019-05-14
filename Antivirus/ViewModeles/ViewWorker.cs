@@ -6,17 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Antivirus.ViewModeles
 {
     internal class ViewWorker: INotifyPropertyChanged
     {
+        private List<Page> Pages;
         private SettingsWorker worker;
         public ViewWorker()
         {
+            virusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
             worker = new SettingsWorker();
-
+            Pages = new List<Page>();
+            CreateVirusPage();
+            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (3).txt"));
+            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ.txt"));
             SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
             ChangeInterfaceLanguage();
             indexLangItem = -1;
@@ -37,6 +43,25 @@ namespace Antivirus.ViewModeles
         {
             SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
         }
+
+        #region CreatePages
+        private void CreateVirusPage()
+        {
+            if (Pages.Where(x => x.Name == "VirusPageW").ToArray().Length == 0)
+            {
+                Pages.Add(new Pages.VirusPage());
+                SetDataContext();
+            }
+        }
+
+        private void SetDataContext()
+        {
+            foreach (Page page in Pages)
+            {
+                page.DataContext = this;
+            }
+        }
+        #endregion
 
         #region Language settings
 
@@ -130,7 +155,50 @@ namespace Antivirus.ViewModeles
           MainWindow.window.WindowState = WindowState.Minimized);
             }
         }
+
+        public ICommand OpenVirusPage
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    if (Pages.Where(x => x.Name == "VirusPageW").ToArray().Length > 0)
+                        CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "VirusPageW").index];
+                    else
+                    {
+                        CreateVirusPage();
+                        CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "VirusPageW").index];
+                    }
+                });
+            }
+        }
         #endregion
+
+        private List<AntivirusLibrary.Abstracts.FileWithSignature> virusList;
+        public List<AntivirusLibrary.Abstracts.FileWithSignature> VirusList
+        {
+            get { return virusList; }
+            set
+            {
+                if (value == virusList)
+                    return;
+                virusList = value;
+                OnPropertyChanged("VirusList");
+            }
+        }
+
+        private Page currentPage;
+        public Page CurrentPage
+        {
+            get { return currentPage; }
+            set
+            {
+                if (value == currentPage)
+                    return;
+                currentPage = value;
+                OnPropertyChanged("CurrentPage");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

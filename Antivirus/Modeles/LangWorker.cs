@@ -21,7 +21,7 @@ namespace Antivirus.Modeles
         public SettingsWorker()
         {
             ReadLangFile();
-            SettingsLoaded = new Settings(Environment.CurrentDirectory + "\\config.cfg");          
+            SettingsLoaded = new Settings(Environment.CurrentDirectory + @"\config.cfg");          
             Language.SaveLanguageExample();
             for (int i = 0; i < LoadedLanguage.Count; i++)
             {

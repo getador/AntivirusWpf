@@ -110,6 +110,9 @@ namespace AntivirusLibrary
         {
             DangerFiles.Add(e.DangerFile);
         }
+        #region Events
+        public event EventHandler<FileCheckEventArgs> FileCheckedEvent;
+        #endregion
         public CounterWorker Counter { get; set; }
         public List<ExceptionFile> ExceptionFiles { get; set; }
         internal List<FileWithSignature> DangerFiles { get; set; }
