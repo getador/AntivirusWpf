@@ -493,5 +493,10 @@
                 <ComboBox ItemsSource="{Binding ItemsFile}" SelectedIndex="{Binding IndexLangItem}" Grid.Column="1" HorizontalAlignment="Left" Margin="18,32,0,0" VerticalAlignment="Top" Width="99"/>
             </Grid>
         </Border>
+        <Border Height="40"  Margin="46,0,0,-0.4" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
+            <ProgressBar Margin="7,7,50,7">
+
+            </ProgressBar>
+        </Border>
     </Grid>
 </Window>

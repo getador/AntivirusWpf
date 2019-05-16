@@ -18,7 +18,7 @@
                                 <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                                     <Grid>
                                         <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" RadiusY="5" RadiusX="5"/>
-                                        <TextBlock Foreground="Black" FontSize="12" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="15,5,5,5"/>
+                                        <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,5,2,2"/>
                                     </Grid>
                                 </Border>
                             </Grid>
@@ -28,11 +28,22 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="true">
                         <Setter Property="Background" Value="Gray"/>
+                        <Setter Property="Foreground" Value="White"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
         </Grid.Resources>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,50,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28*"/>
+            <RowDefinition Height="197*"/>
+        </Grid.RowDefinitions>
+        <Border Margin="0,0,0,6">
+            <Grid>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInCotalog}" Content="Проверить каталог" Width="100" Margin="30,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInFile}" Content="Проверить файл" Width="100" Margin="150,10,0,10"/>
+            </Grid>
+        </Border>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,19.6" Grid.Row="1">
             <Grid>
                 <ListView ItemsSource="{Binding VirusList}" Foreground="AliceBlue">
                     <ListView.Background>
@@ -46,12 +57,8 @@
                                         <Grid Height="50">
                                             <Rectangle Margin="3" Fill="{TemplateBinding Foreground}" RadiusY="11" RadiusX="11"/>
                                             <TextBlock Foreground="Black" Margin="10,5,0,0" Background="Transparent" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
-                                            <Button Style="{StaticResource CustromListItemButton}" Margin="15,0,0,10" Height="20" Width="70" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Добавить в исключение" Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}">
-   
-                                            </Button>
-                                            <Button Style="{StaticResource CustromListItemButton}" Margin="0,0,15,10" Height="20" Width="70" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Удалить" Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}">
-
-                                            </Button>
+                                            <Button Style="{StaticResource CustromListItemButton}" Background="#9373DCD2" Margin="7,0,0,5" Height="20" Width="150" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Добавить в исключение" Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+                                            <Button Style="{StaticResource CustromListItemButton}" Background="#FF73DCD2" Margin="0,0,7,5" Height="20" Width="150" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Удалить" Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
                                         </Grid>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -59,18 +66,15 @@
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="true">
                                     <Setter Property="Foreground" Value="#FF73DCD2"/>
+                                    <Setter Property="Tag" Value="100"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="false">
+                                    <Setter Property="Tag" Value="0"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <DataGrid Name="qwer" Margin="15,325,15,-250.4" AutoGenerateColumns="False" ItemsSource="{Binding VirusList}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Адрес" Width="200" Binding="{Binding Path}"/>
-                        <DataGridTextColumn Header="Сигнатура" Width="200" Binding="{Binding Signature}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-
             </Grid>
         </ScrollViewer>
     </Grid>

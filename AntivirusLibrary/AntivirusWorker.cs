@@ -67,7 +67,7 @@ namespace AntivirusLibrary
         /// </summary>
         /// <param name="path">Путь к каталогу для проверки</param>
         /// <param name="searchPattern">Паттерн для поиска</param>
-        public void GetFilesForScan(string path,string searchPattern)
+        public void ScanFiles(string path,string searchPattern)
         {
             List<string> ListWithPath = FindFilesPath(path, searchPattern).Where(x=>!ExceptionFiles.Select(y=>y.Path).Contains(x)).ToList();
             int listLength = ListWithPath.Count;
@@ -109,16 +109,17 @@ namespace AntivirusLibrary
         public void AddInDangerFile(object sender, FindDangerEventArgs e)
         {
             DangerFiles.Add(e.DangerFile);
+            FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
         }
         #region Events
         public event EventHandler<FileCheckEventArgs> FileCheckedEvent;
         #endregion
         public CounterWorker Counter { get; set; }
         public List<ExceptionFile> ExceptionFiles { get; set; }
-        internal List<FileWithSignature> DangerFiles { get; set; }
-        internal List<ProcessDange> DangerProcess { get; set; }
-        internal FileWithSignature[][] SignaturesArray { get; set; }
-        internal string SignatureString { get; set; }
+        public List<FileWithSignature> DangerFiles { get; set; }
+        public List<ProcessDange> DangerProcess { get; set; }
+        public FileWithSignature[][] SignaturesArray { get; set; }
+        public string SignatureString { get; set; }
         private VirusWorker[] Workers;
         private int countThread;
         /// <summary>

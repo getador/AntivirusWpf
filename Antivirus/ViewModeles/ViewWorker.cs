@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace Antivirus.ViewModeles
@@ -15,14 +16,17 @@ namespace Antivirus.ViewModeles
     {
         private List<Page> Pages;
         private SettingsWorker worker;
+        private AntivirusLibrary.AntivirusWorker antivirusWorker;
         public ViewWorker()
         {
             virusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
             worker = new SettingsWorker();
             Pages = new List<Page>();
+            antivirusWorker = new AntivirusLibrary.AntivirusWorker(worker.ExceptionsWork.ExceptionFiles,1);
+            antivirusWorker.FileCheckedEvent += GetUpdateFile;
             CreateVirusPage();
-            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (3).txt"));
-            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ.txt"));
+            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
+            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
             SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
             ChangeInterfaceLanguage();
             indexLangItem = -1;
@@ -152,7 +156,7 @@ namespace Antivirus.ViewModeles
             get
             {
                 return new ButtonViewCommand((obj) =>
-          MainWindow.window.WindowState = WindowState.Minimized);
+                    MainWindow.window.WindowState = WindowState.Minimized);
             }
         }
 
@@ -168,6 +172,41 @@ namespace Antivirus.ViewModeles
                     {
                         CreateVirusPage();
                         CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "VirusPageW").index];
+                    }
+                });
+            }
+        }
+
+        public ICommand SearchInCotalog
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    using (FolderBrowserDialog browserDialog = new FolderBrowserDialog())
+                    {
+                        if (browserDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            antivirusWorker.ScanFiles(browserDialog.SelectedPath, "*.exe");
+                        }
+                    }
+                });
+            }
+
+        }
+
+        public ICommand SearchInFile
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    {
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            antivirusWorker.ScanFile(openFileDialog.FileName, false);
+                        }
                     }
                 });
             }
@@ -198,6 +237,11 @@ namespace Antivirus.ViewModeles
                 currentPage = value;
                 OnPropertyChanged("CurrentPage");
             }
+        }
+
+        public void GetUpdateFile(object sender, AntivirusLibrary.Events.FileCheckEventArgs e)
+        {
+            VirusList = ((AntivirusLibrary.AntivirusWorker)sender).DangerFiles;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

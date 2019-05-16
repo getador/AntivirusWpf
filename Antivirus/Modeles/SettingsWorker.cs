@@ -17,12 +17,13 @@ namespace Antivirus.Modeles
         public Settings SettingsLoaded { get; set; }
         public Language UsedLanguage { get; set; }
         public List<Language> LoadedLanguage { get; set; }
-
+        public Exceptions ExceptionsWork { get; set; }
         public SettingsWorker()
         {
             ReadLangFile();
             SettingsLoaded = new Settings(Environment.CurrentDirectory + @"\config.cfg");          
             Language.SaveLanguageExample();
+            ExceptionsWork = Exceptions.LoadExeption(Environment.CurrentDirectory + @"\exception.cfg");
             for (int i = 0; i < LoadedLanguage.Count; i++)
             {
                 if (LoadedLanguage[i].LanguageName == SettingsLoaded.InterfaceLanguage)
