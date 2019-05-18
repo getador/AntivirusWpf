@@ -349,12 +349,12 @@
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border1">
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="52"/>
             </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border2">
+            <!--<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border2">
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.861"/>
             </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border2">
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="52.4"/>
-            </DoubleAnimationUsingKeyFrames>
+            </DoubleAnimationUsingKeyFrames>-->
         </Storyboard>
         <Storyboard x:Key="MenuClose">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="stackPanel">
@@ -369,12 +369,12 @@
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border1">
                 <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border2">
+            <!--<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="border2">
                 <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="border2">
                 <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
+            </DoubleAnimationUsingKeyFrames>-->
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
@@ -442,7 +442,11 @@
             </StackPanel.RenderTransform>
         </StackPanel>
         -->
+        <Border Height="40"  Margin="46,0,0,-0.4" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
+            <ProgressBar Margin="20,7,50,7" Maximum="{Binding MaxStatusValue}" Value="{Binding StatusValue}">
 
+            </ProgressBar>
+        </Border>
         <Border x:Name="stackPanel" Background="#FF73DCD2" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2" Width="46">
             <Grid>
                 <Button Command="{Binding OpenVirusPage}" Tag="pack://application:,,,/Images/Virus.jpg" Content="Button" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,111,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
@@ -474,7 +478,7 @@
         </CheckBox>
         <Button x:Name="button1" Content="Button" Style="{DynamicResource ButtonStyle1}"  Command="{Binding Exit_Click}" HorizontalAlignment="Right" Width="29" Grid.Column="1"/>
         <Button x:Name="button" Command="{Binding Minimalize_Window}" Grid.Column="1" Margin="694.001,0,29.4,0" Style="{DynamicResource ButtonMinimulizerStyle1}"/>
-        <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349.6" Margin="0,-349.2,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="2" Background="#FFD4C8C8" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
+        <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349.6" Margin="0,-349.2,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="2" Background="#FF99BCB9" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
             <Border.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -493,10 +497,6 @@
                 <ComboBox ItemsSource="{Binding ItemsFile}" SelectedIndex="{Binding IndexLangItem}" Grid.Column="1" HorizontalAlignment="Left" Margin="18,32,0,0" VerticalAlignment="Top" Width="99"/>
             </Grid>
         </Border>
-        <Border Height="40"  Margin="46,0,0,-0.4" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
-            <ProgressBar Margin="7,7,50,7">
 
-            </ProgressBar>
-        </Border>
     </Grid>
 </Window>

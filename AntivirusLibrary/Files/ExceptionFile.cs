@@ -8,8 +8,12 @@ using AntivirusLibrary.Abstracts;
 namespace AntivirusLibrary.Files
 {
     [Serializable]
-    public class ExceptionFile
+    public class ExceptionFile:ICloneable
     {
+        public ExceptionFile()
+        {
+
+        }
         public ExceptionFile(string Path)
         {
             this.Path = Path;
@@ -18,6 +22,11 @@ namespace AntivirusLibrary.Files
         ~ExceptionFile()
         {
 
+        }
+
+        public object Clone()
+        {
+            return new ExceptionFile(Path);
         }
     }
 }

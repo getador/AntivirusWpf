@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AntivirusLibrary.Events;
+using System.Threading;
 
 namespace AntivirusLibrary.Workers
 {
@@ -19,7 +20,7 @@ namespace AntivirusLibrary.Workers
         public VirusWorker(string signatureString, params FileWithSignature[] filesArray)
         {
             SignatureString = signatureString;
-            VirusList = new List<VirusFile>();
+            //VirusList = new List<VirusFile>();
             FilesArray = filesArray;
             checkFileThread = new Task(() => CheckFiles());
         }
@@ -34,7 +35,7 @@ namespace AntivirusLibrary.Workers
         public event EventHandler<FindDangerEventArgs> FindDangerEvent;
         public event EventHandler<FileCheckEventArgs> FileCheckedEvent;
         public FileWithSignature[] FilesArray { get; set; }
-        public List<VirusFile> VirusList { get; set; }
+        //public List<VirusFile> VirusList { get; set; }
         public string SignatureString { get; set; }
         private void CheckFiles()
         {
@@ -45,7 +46,8 @@ namespace AntivirusLibrary.Workers
                 {
                     if (SignatureString.Contains(FilesArray[i].Signature))
                     {
-                        VirusList.Add((VirusFile)FilesArray[i]);
+                        FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
+                        //VirusList.Add((VirusFile)FilesArray[i]);
                         findSignature = true;
                     }
                     if (!findSignature)
@@ -56,14 +58,17 @@ namespace AntivirusLibrary.Workers
                             if (fileSignature.Contains(signature))
                             {
                                 FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
-                                FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
-                                VirusList.Add((VirusFile)FilesArray[i]);
+                                //VirusList.Add((VirusFile)FilesArray[i]);
                                 break;
                             }
                         }
                     }
                 }
+                FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
+                Thread.Sleep(50);
+                FilesArray[i] = null;
             }
+            FilesArray = null;
         }
         private Task checkFileThread;
     }

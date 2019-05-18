@@ -18,7 +18,7 @@
                                 <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                                     <Grid>
                                         <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" RadiusY="5" RadiusX="5"/>
-                                        <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,5,2,2"/>
+                                        <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,3,2,2"/>
                                     </Grid>
                                 </Border>
                             </Grid>
@@ -32,6 +32,8 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
+            
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="28*"/>
@@ -54,11 +56,47 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Grid Height="50">
-                                            <Rectangle Margin="3" Fill="{TemplateBinding Foreground}" RadiusY="11" RadiusX="11"/>
-                                            <TextBlock Foreground="Black" Margin="10,5,0,0" Background="Transparent" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
-                                            <Button Style="{StaticResource CustromListItemButton}" Background="#9373DCD2" Margin="7,0,0,5" Height="20" Width="150" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Добавить в исключение" Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
-                                            <Button Style="{StaticResource CustromListItemButton}" Background="#FF73DCD2" Margin="0,0,7,5" Height="20" Width="150" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Удалить" Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+                                        <Grid Height="{TemplateBinding Height}">
+                                            <Rectangle
+                                                Margin="3"
+                                                VerticalAlignment="Top"
+                                                Height="30"
+                                                Fill="{TemplateBinding Foreground}"
+                                                RadiusY="11" 
+                                                RadiusX="11"/>
+                                            
+                                            <TextBlock 
+                                                Foreground="Black"
+                                                Margin="10,5,0,0"
+                                                Background="Transparent"
+                                                Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+                                            
+                                            <Button 
+                                                Style="{StaticResource CustromListItemButton}" 
+                                                Margin="7,0,0,5" 
+                                                Height="20" 
+                                                Width="150" 
+                                                HorizontalAlignment="Left" 
+                                                VerticalAlignment="Bottom" 
+                                                Command="{Binding AddInException}" 
+                                                Click="AddException_Click"
+                                                Content="Добавить в исключение" 
+                                                Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
+                                                Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+
+                                            <Button 
+                                                Style="{StaticResource CustromListItemButton}" 
+                                                Margin="0,0,7,5" 
+                                                Height="20" 
+                                                Width="150" 
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Command="{Binding AddInException}"
+                                                Click="Delete_Click"
+                                                Content="Удалить"
+                                                Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
+                                                Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+                                            
                                         </Grid>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -67,14 +105,18 @@
                                 <Trigger Property="IsMouseOver" Value="true">
                                     <Setter Property="Foreground" Value="#FF73DCD2"/>
                                     <Setter Property="Tag" Value="100"/>
+                                    <Setter Property="Height" Value="60"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="false">
                                     <Setter Property="Tag" Value="0"/>
+                                    <Setter Property="Height" Value="60"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
+
+
             </Grid>
         </ScrollViewer>
     </Grid>

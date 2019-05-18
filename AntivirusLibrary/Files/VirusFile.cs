@@ -13,10 +13,18 @@ namespace AntivirusLibrary.Files
         {
 
         }
+        public VirusFile(string path, string signature):base(path,signature)
+        {
 
+        }
         ~VirusFile()
         {
             
+        }
+
+        public override object Clone()
+        {
+            return new VirusFile(Path, Signature);
         }
     }
 }

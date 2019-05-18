@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Antivirus.ViewModeles
 {
@@ -22,14 +24,14 @@ namespace Antivirus.ViewModeles
             virusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
             worker = new SettingsWorker();
             Pages = new List<Page>();
-            antivirusWorker = new AntivirusLibrary.AntivirusWorker(worker.ExceptionsWork.ExceptionFiles,1);
-            antivirusWorker.FileCheckedEvent += GetUpdateFile;
+            CreteAntiwirusWorker();
             CreateVirusPage();
-            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
-            VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
-            SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
+            //VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
+            //VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
+            //SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
             ChangeInterfaceLanguage();
             indexLangItem = -1;
+            ExceptionFiles = worker.ExceptionsWork.ExceptionFiles;
             for (int i = 0; i < ItemsFile.Count; i++)
             {
                 if (ItemsFile[i] == worker.SettingsLoaded.InterfaceLanguage)
@@ -43,6 +45,33 @@ namespace Antivirus.ViewModeles
 
         }
 
+        private void CreteAntiwirusWorker()
+        {
+            antivirusWorker = new AntivirusLibrary.AntivirusWorker(worker.ExceptionsWork.ExceptionFiles, 1, GetSignatureFile(Environment.CurrentDirectory + @"\hashlid.hash"));
+            antivirusWorker.FileCheckedEvent += GetUpdateFile;
+            antivirusWorker.Counter.CounterChangeEvent += GetCount;
+            antivirusWorker.Counter.MaxValueChangeEvent += GetMaxValue;
+            antivirusWorker.Counter.Reset();
+        }
+
+        private string GetSignatureFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                using (StreamReader stream = new StreamReader(path))
+                {
+                    return stream.ReadToEnd().Replace("\r\n", "||");
+                }
+            }
+            else
+            {
+                using (Stream stream = new FileStream(path,FileMode.Create))
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
         public void ChangeInterfaceLanguage()
         {
             SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
@@ -54,6 +83,7 @@ namespace Antivirus.ViewModeles
             if (Pages.Where(x => x.Name == "VirusPageW").ToArray().Length == 0)
             {
                 Pages.Add(new Pages.VirusPage());
+                ((Pages.VirusPage)Pages[Pages.Count - 1]).AddFileInExceptionEvent += GetUpdateException;
                 SetDataContext();
             }
         }
@@ -187,7 +217,11 @@ namespace Antivirus.ViewModeles
                     {
                         if (browserDialog.ShowDialog() == DialogResult.OK)
                         {
-                            antivirusWorker.ScanFiles(browserDialog.SelectedPath, "*.exe");
+                            Task.Run(() =>
+                            {
+                                antivirusWorker.ScanFiles(browserDialog.SelectedPath, "*.*");
+                            });
+
                         }
                     }
                 });
@@ -205,9 +239,22 @@ namespace Antivirus.ViewModeles
                     {
                         if (openFileDialog.ShowDialog() == DialogResult.OK)
                         {
-                            antivirusWorker.ScanFile(openFileDialog.FileName, false);
+                            Task.Run(() =>
+                            {
+                                antivirusWorker.ScanFile(openFileDialog.FileName, false);
+                            });
                         }
                     }
+                });
+            }
+        }
+
+        public ICommand AddInException
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
                 });
             }
         }
@@ -219,11 +266,25 @@ namespace Antivirus.ViewModeles
             get { return virusList; }
             set
             {
-                if (value == virusList)
-                    return;
                 virusList = value;
                 OnPropertyChanged("VirusList");
             }
+        }
+
+        private List<AntivirusLibrary.Files.ExceptionFile> exceptionFiles;
+        public List<AntivirusLibrary.Files.ExceptionFile> ExceptionFiles
+        {
+            get { return exceptionFiles; }
+            set
+            {
+                exceptionFiles = value;
+                OnPropertyChanged("ExceptionFiles");
+            }
+        }
+
+        private void UpdateExceptionFiles()
+        {
+            ExceptionFiles = worker.ExceptionsWork.ExceptionFiles;
         }
 
         private Page currentPage;
@@ -238,18 +299,103 @@ namespace Antivirus.ViewModeles
                 OnPropertyChanged("CurrentPage");
             }
         }
+        #region Event callback
+
+        public void GetCount(object sender, AntivirusLibrary.Events.CounterChangeEventArgs e)
+        {
+            StatusValue = (int)e.Count;
+        }
+
+        public void GetMaxValue(object sender, AntivirusLibrary.Events.CounterMaxValueChangeEventArgs e)
+        {
+            MaxStatusValue = (int)e.MaxValue;
+        }
 
         public void GetUpdateFile(object sender, AntivirusLibrary.Events.FileCheckEventArgs e)
         {
-            VirusList = ((AntivirusLibrary.AntivirusWorker)sender).DangerFiles;
+            //AntivirusLibrary.AntivirusWorker work = (AntivirusLibrary.AntivirusWorker)sender;
+            //VirusList = work.DangerFiles;
+
+
+            ////List<AntivirusLibrary.Abstracts.FileWithSignature> newList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
+            ////if (antivirusWorker.DangerFiles.Count != 0)
+            ////{
+            ////    for (int i = 0; i < antivirusWorker.DangerFiles.Count; i++)
+            ////    {
+            ////        newList.Add((AntivirusLibrary.Abstracts.FileWithSignature)antivirusWorker.DangerFiles[i].Clone());
+            ////    }
+            ////}
+
+            ////VirusList = newList;
+            List<AntivirusLibrary.Abstracts.FileWithSignature> newList;
+            if (e.State)
+                newList = new List<AntivirusLibrary.Abstracts.FileWithSignature>(virusList.Select(x => (AntivirusLibrary.Abstracts.FileWithSignature)x.Clone()));
+            else
+                newList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
+
+            if (antivirusWorker.DangerFiles.Count != 0)
+            {
+                AntivirusLibrary.Abstracts.FileWithSignature[] copyDangerFile = antivirusWorker.DangerFiles.Where(x => !newList.Select(y=>y.Path).ToArray().Contains(x.Path)).ToArray();
+                for (int i = 0; i < copyDangerFile.Length; i++)
+                {
+                    newList.Add((AntivirusLibrary.Abstracts.FileWithSignature)copyDangerFile[i].Clone());
+                }
+            }
+            else
+            {
+                newList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
+            }
+
+            VirusList = newList;
+
+            //VirusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>()
+            //{
+            //   new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"),
+            //   new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt")
+            //};
         }
+
+
+        public void GetUpdateException(object sender, AntivirusLibrary.Events.AddFileInExceptionEventArgs e)
+        {
+            if (!worker.ExceptionsWork.ExceptionFiles.Select(x=>x.Path).Contains(e.Path))
+            {
+                worker.ExceptionsWork.AddException(Environment.CurrentDirectory + @"\exception.cfg", e.Path);
+                antivirusWorker.AddInException(this, new AntivirusLibrary.Events.ExceptionAddEventArgs(new AntivirusLibrary.Files.ExceptionFile(e.Path)));
+                UpdateExceptionFiles();
+            }
+        }
+        #endregion
+
+        #region Status
+        private int statusValue;
+        public int StatusValue
+        {
+            get { return statusValue; }
+            set
+            {
+                statusValue = value;
+                OnPropertyChanged("StatusValue");
+            }
+        }
+
+        private int maxStatusValue;
+        public int MaxStatusValue
+        {
+            get { return maxStatusValue; }
+            set
+            {
+                maxStatusValue = value;
+                OnPropertyChanged("MaxStatusValue");
+            }
+        }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

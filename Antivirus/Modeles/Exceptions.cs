@@ -23,20 +23,40 @@ namespace Antivirus.Modeles
         public List<ExceptionFile> ExceptionFiles { get; set; }
         public static Exceptions LoadExeption(string path)
         {
-            Stream stream = new FileStream(path, FileMode.Open);
-            XmlSerializer formatter = new XmlSerializer(typeof(Exceptions));
             Exceptions ReadExceptions = new Exceptions();
-            try
+            if (File.Exists(path))
             {
-                ReadExceptions = (Exceptions)formatter.Deserialize(stream);
-                stream.Close();
+                Stream stream = new FileStream(path, FileMode.Open);
+                XmlSerializer formatter = new XmlSerializer(typeof(Exceptions));
+                try
+                {
+                    ReadExceptions = (Exceptions)formatter.Deserialize(stream);
+                    stream.Close();
+                }
+                catch (Exception)
+                {
+                    stream.Close();
+                    ReadExceptions.SaveException(path);
+                    //stream = new FileStream(path, FileMode.Open);
+                    //ReadExceptions = (Exceptions)formatter.Deserialize(stream);
+                }
             }
-            catch (Exception)
+            else
             {
-                stream.Close();
                 ReadExceptions.SaveException(path);
+                //XmlSerializer formatter = new XmlSerializer(typeof(Exceptions));
+                //using (Stream stream = new FileStream(path, FileMode.Open))
+                //{
+                //    ReadExceptions = (Exceptions)formatter.Deserialize(stream);
+                //}
             }
             return ReadExceptions;
+        }
+
+        public void AddException(string path,string exception)
+        {
+            ExceptionFiles.Add(new ExceptionFile(exception));
+            SaveException(path);
         }
 
         public void SaveException(string path)

@@ -12,7 +12,7 @@ namespace AntivirusLibrary.Abstracts
     /// Абстрактный класс файла с путем к файлу и сигнатурой
     /// </summary>
     [Serializable]
-    public abstract class FileWithSignature : IDisposable
+    public abstract class FileWithSignature : IDisposable,ICloneable
     {
         /// <summary>
         /// Конструктор 
@@ -35,6 +35,12 @@ namespace AntivirusLibrary.Abstracts
             {
                 Signature = null;
             }
+        }
+
+        public FileWithSignature(string path, string signature)
+        {
+            Path = path;
+            Signature = signature;
         }
 
         ~FileWithSignature()
@@ -62,6 +68,8 @@ namespace AntivirusLibrary.Abstracts
             Path = null;
             Signature = null;
         }
+
+        public abstract object Clone();
 
         public string Path { get; set; }
         public string Signature { get; set; }
