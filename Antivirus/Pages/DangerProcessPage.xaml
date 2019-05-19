@@ -36,15 +36,9 @@
 
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="28*"/>
-            <RowDefinition Height="197*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border Margin="0,0,0,6">
-            <Grid>
-                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInCotalog}" Content="Проверить каталог" Width="100" Margin="30,10,0,10"/>
-            </Grid>
-        </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,19.6" Grid.Row="1">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,20,20,20">
             <Grid>
                 <ListView ItemsSource="{Binding DangerProcessList}" Foreground="AliceBlue">
                     <ListView.Background>
@@ -77,6 +71,7 @@
                                                 Width="150" 
                                                 HorizontalAlignment="Left" 
                                                 VerticalAlignment="Bottom" 
+                                                Click="AddInException_Click"
                                                 Content="Добавить в исключение" 
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
@@ -88,6 +83,7 @@
                                                 Width="150" 
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
+                                                Click="StopProcess_Click"
                                                 Content="Удалить"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>

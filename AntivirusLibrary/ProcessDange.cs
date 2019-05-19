@@ -45,8 +45,14 @@ namespace AntivirusLibrary
         public void KillProcess()
         {
             Process.Kill();
+            Despoce();
         }
-
+        public void Despoce()
+        {
+            Process = null;
+            Path = null;
+            Signature = null;
+        }
         public object Clone()
         {
             return new ProcessDange(Process, Path, Signature);

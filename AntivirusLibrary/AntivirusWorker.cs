@@ -28,6 +28,7 @@ namespace AntivirusLibrary
         {
             DangerFiles = new List<FileWithSignature>();
             DangerProcess = new List<ProcessDange>();
+            ClearProcess = new List<Process>();
             this.ExceptionFiles = ExceptionFiles;
             countThread = CountThread;
             Counter = new CounterWorker();
@@ -120,74 +121,99 @@ namespace AntivirusLibrary
         {
             while (true)
             {
-                foreach (var process in Process.GetProcesses().Where(x=>!DangerProcess.Select(y=>y.Process.ProcessName).ToArray().Contains(x.ProcessName)).ToArray())
+                Process[] processes = Process.GetProcesses().Where(x => !DangerProcess.Select(y => y.Process.ProcessName).ToArray().Contains(x.ProcessName) && !ClearProcess.Select(y => y.ProcessName).Contains(x.ProcessName)).ToArray();
+
+                //ProcessDange[] processWhitchOff = DangerProcess.Where(x => processes.Select(y => y.ProcessName).ToArray().Contains(x.Process.ProcessName)).ToArray();
+                ProcessDange[] processWhitchOff = DangerProcess.Where(x => !Process.GetProcesses().Select(y => y.ProcessName).Contains(x.Process.ProcessName)).ToArray();
+                if (processWhitchOff.Length != 0)
                 {
-                    try
+                    //DangerProcess.RemoveAll(x => !processes.Select(y => y.ProcessName).Contains(x.Process.ProcessName));
+                    DangerProcess.RemoveAll(x => processWhitchOff.Select(y=>y.Process.ProcessName).Contains(x.Process.ProcessName));
+                    FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
+                }
+
+                if (processes.Length != 0)
+                {
+
+
+
+                    foreach (var process in processes)
                     {
-                        bool notFindInException = true;
-                        foreach (var exception in ExceptionFiles)
+                        try
                         {
-                            if (process.MainModule.FileName.Contains(exception.Path))
+                            bool notFindInException = true;
+                            foreach (var exception in ExceptionFiles)
                             {
-                                notFindInException = false;
-                                DangerProcess.RemoveAll(x => x.Process.ProcessName == process.ProcessName);
-                                FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
-                                break;
-                            }
-                        }
-
-                        //if (DangerProcess.Where(x => x.Path == process.MainModule.FileName).ToArray().Length != 0)
-                        //{
-                        //    notFindInException = false;
-                        //}
-
-                        if (notFindInException && !FileValidater.VerifyAuthenticodeSignature(process.MainModule.FileName))
-                        {
-                            string fileSignature = File.ReadAllText(process.MainModule.FileName);
-                            bool findSignature = false;
-                            if (SignatureString.Contains(process.MainModule.FileName))
-                                findSignature = true;
-                            if (!findSignature)
-                                foreach (var signature in EvrizmSignature.signatures)
+                                if (process.MainModule.FileName.Contains(exception.Path))
                                 {
-                                    if (fileSignature.Contains(signature))
-                                    {
-                                        findSignature = true;
-                                        break;
-                                    }
+                                    notFindInException = false;
+                                    DangerProcess.RemoveAll(x => x.Process.ProcessName == process.ProcessName);
+                                    FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
+                                    break;
                                 }
+                            }
 
-                            if (findSignature)
+                            //if (DangerProcess.Where(x => x.Path == process.MainModule.FileName).ToArray().Length != 0)
+                            //{
+                            //    notFindInException = false;
+                            //}
+
+                            if (notFindInException && !FileValidater.VerifyAuthenticodeSignature(process.MainModule.FileName))
                             {
-                                //DangerList.Invoke(new Action(() => DangerList.Items.Add(new FileWhichCheked(process.MainModule.FileName))));
-                                //DialogResult dialogResult = MessageBox.Show($"Найдена угроза в процессе {process.ProcessName}.\nНажмите \"Да\" для добавления процесса в иключение \nили нажмите \"Нет\" для его завершения",
-                                //    "Найдена угроза",
-                                //    MessageBoxButtons.YesNo);
-                                //if (dialogResult == DialogResult.Yes)
-                                //{
-                                //    loadedFileException.Add(new FileWhichCheked(process.MainModule.FileName));
-                                //    using (FileStream stream = File.OpenWrite(Directory.GetCurrentDirectory() + "\\ExceptionFile.vih"))
-                                //    {
-                                //        BinaryFormatter formatter = new BinaryFormatter();
-                                //        formatter.Serialize(stream, loadedFileException);
-                                //    }
-                                //}
-                                //else if (dialogResult == DialogResult.No)
-                                //{
-                                //    //process.Kill();
-                                //}
-                                if (CloseProcessTurn)
-                                    process.Kill();
+                                string fileSignature = File.ReadAllText(process.MainModule.FileName);
+                                bool findSignature = false;
+                                if (SignatureString.Contains(process.MainModule.FileName))
+                                    findSignature = true;
+                                if (!findSignature)
+                                    foreach (var signature in EvrizmSignature.signatures)
+                                    {
+                                        if (fileSignature.Contains(signature))
+                                        {
+                                            findSignature = true;
+                                            break;
+                                        }
+                                    }
+
+                                if (findSignature)
+                                {
+                                    //DangerList.Invoke(new Action(() => DangerList.Items.Add(new FileWhichCheked(process.MainModule.FileName))));
+                                    //DialogResult dialogResult = MessageBox.Show($"Найдена угроза в процессе {process.ProcessName}.\nНажмите \"Да\" для добавления процесса в иключение \nили нажмите \"Нет\" для его завершения",
+                                    //    "Найдена угроза",
+                                    //    MessageBoxButtons.YesNo);
+                                    //if (dialogResult == DialogResult.Yes)
+                                    //{
+                                    //    loadedFileException.Add(new FileWhichCheked(process.MainModule.FileName));
+                                    //    using (FileStream stream = File.OpenWrite(Directory.GetCurrentDirectory() + "\\ExceptionFile.vih"))
+                                    //    {
+                                    //        BinaryFormatter formatter = new BinaryFormatter();
+                                    //        formatter.Serialize(stream, loadedFileException);
+                                    //    }
+                                    //}
+                                    //else if (dialogResult == DialogResult.No)
+                                    //{
+                                    //    //process.Kill();
+                                    //}
+                                    if (CloseProcessTurn)
+                                        process.Kill();
+                                    else
+                                        AddInDangerProcessList(new ProcessDange(process));
+                                    if (SoundTurn)
+                                        Console.Beep();
+                                }
                                 else
-                                    AddInDangerProcessList(new ProcessDange(process));
-                                if (SoundTurn)
-                                    Console.Beep();
+                                    ClearProcess.Add(process);
+                            }
+                            else if (FileValidater.VerifyAuthenticodeSignature(process.MainModule.FileName))
+                            {
+                                ClearProcess.Add(process);
                             }
                         }
+                        catch (Exception)
+                        {
+                            ClearProcess.Add(process);
+                        }
                     }
-                    catch (Exception)
-                    {
-                    }
+
                 }
                 Thread.Sleep(500);
             }
@@ -210,11 +236,14 @@ namespace AntivirusLibrary
         public void KillProcess(Process process)
         {
             process.Kill();
+            ClearProcess.RemoveAll(x => x.ProcessName == process.ProcessName);
             FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
         }
         public void KillProcess(ProcessDange process)
         {
             process.KillProcess();
+            DangerProcess.RemoveAll(x => x.Process == null);
+            ClearProcess.RemoveAll(x => x.ProcessName == process.Process.ProcessName);
             FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
         }
         public void AddInDangerFile(object sender, FindDangerEventArgs e)
@@ -248,6 +277,7 @@ namespace AntivirusLibrary
         public List<ExceptionFile> ExceptionFiles { get; set; }
         public List<FileWithSignature> DangerFiles { get; set; }
         public List<ProcessDange> DangerProcess { get; set; }
+        public List<Process> ClearProcess { get; set; } 
         public FileWithSignature[][] SignaturesArray { get; set; }
         public string SignatureString { get; set; }
         private VirusWorker[] Workers;

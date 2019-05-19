@@ -108,6 +108,8 @@ namespace Antivirus.ViewModeles
             if (Pages.Where(x => x.Name == "DangerProcessPageW").ToArray().Length == 0)
             {
                 Pages.Add(new Pages.DangerProcessPage());
+                ((Pages.DangerProcessPage)Pages[Pages.Count - 1]).AddFileInExceptionEvent += GetUpdateException;
+                ((Pages.DangerProcessPage)Pages[Pages.Count - 1]).KillProcessEvent += KillProcess;
                 //((Pages.ExceptionPage)Pages[Pages.Count - 1]).AddFileInExceptionEvent += GetUpdateException;
                 SetDataContext();
                 Task.Run(() => antivirusWorker.ScanProcess());
@@ -517,6 +519,12 @@ namespace Antivirus.ViewModeles
                 antivirusWorker.AddInException(this, new AntivirusLibrary.Events.ExceptionAddEventArgs(new AntivirusLibrary.Files.ExceptionFile(e.Path)));
                 UpdateExceptionFiles(true);
             }
+        }
+
+        public void KillProcess(object sender,AntivirusLibrary.Events.AddFileInExceptionEventArgs e)
+        {
+            antivirusWorker.KillProcess(antivirusWorker.DangerProcess.Where(x => x.Process.ProcessName == e.Path).First());
+            UpdateDangerProcessList(new AntivirusLibrary.Events.AddDangerProcessEventArgs(false));
         }
 
         public void RemoveException(object sender, AntivirusLibrary.Events.AddFileInExceptionEventArgs e)

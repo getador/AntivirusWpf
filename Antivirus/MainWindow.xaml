@@ -376,6 +376,30 @@
                 <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
             </DoubleAnimationUsingKeyFrames>-->
         </Storyboard>
+
+        <Style x:Key="CustromButtonWithRectangle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
+                                <Grid>
+                                    <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" RadiusY="5" RadiusX="5"/>
+                                    <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,3,2,2"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" Value="Gray"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="checkBox1">
@@ -443,9 +467,10 @@
         </StackPanel>
         -->
         <Border Height="40"  Margin="46,0,0,-0.4" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
-            <ProgressBar Margin="20,7,50,7" Maximum="{Binding MaxStatusValue}" Value="{Binding StatusValue}">
-
-            </ProgressBar>
+            <Grid>
+                <ProgressBar Margin="20,7,80,7" Maximum="{Binding MaxStatusValue}" Value="{Binding StatusValue}"/>
+                <Button HorizontalAlignment="Right" Margin="0,7,20,7" Content="Отменить" Style="{StaticResource CustromButtonWithRectangle}"/>
+            </Grid>
         </Border>
         <Border x:Name="stackPanel" Background="#FF73DCD2" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2" Width="46">
             <Grid>

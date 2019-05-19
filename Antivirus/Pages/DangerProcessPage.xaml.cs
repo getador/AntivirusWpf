@@ -24,5 +24,18 @@ namespace Antivirus.Pages
         {
             InitializeComponent();
         }
+
+        private void AddInException_Click(object sender, RoutedEventArgs e)
+        {
+            AddFileInExceptionEvent?.Invoke(this, new AntivirusLibrary.Events.AddFileInExceptionEventArgs(((AntivirusLibrary.ProcessDange)((Button)sender).DataContext).Path));
+        }
+
+        private void StopProcess_Click(object sender, RoutedEventArgs e)
+        {
+            KillProcessEvent?.Invoke(this, new AntivirusLibrary.Events.AddFileInExceptionEventArgs(((AntivirusLibrary.ProcessDange)((Button)sender).DataContext).Process.ProcessName));
+        }
+
+        public event EventHandler<AntivirusLibrary.Events.AddFileInExceptionEventArgs> AddFileInExceptionEvent;
+        public event EventHandler<AntivirusLibrary.Events.AddFileInExceptionEventArgs> KillProcessEvent;
     }
 }
