@@ -1,13 +1,13 @@
-﻿<Page x:Class="Antivirus.Pages.VirusPage"
+﻿<Page x:Class="Antivirus.Pages.DangerProcessPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Antivirus.Pages"
-      xmlns:viewModel="clr-namespace:Antivirus.ViewModeles"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="VirusPage" Name="VirusPageW">
+      Title="DangerProcessPage" Name="DangerProcessPageW">
+
     <Grid>
         <Grid.Resources>
             <Style x:Key="CustromListItemButton" TargetType="{x:Type Button}">
@@ -32,8 +32,8 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            
-            
+
+
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="28*"/>
@@ -42,12 +42,11 @@
         <Border Margin="0,0,0,6">
             <Grid>
                 <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInCotalog}" Content="Проверить каталог" Width="100" Margin="30,10,0,10"/>
-                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInFile}" Content="Проверить файл" Width="100" Margin="150,10,0,10"/>
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,19.6" Grid.Row="1">
             <Grid>
-                <ListView ItemsSource="{Binding VirusList}" Foreground="AliceBlue">
+                <ListView ItemsSource="{Binding DangerProcessList}" Foreground="AliceBlue">
                     <ListView.Background>
                         <ImageBrush/>
                     </ListView.Background>
@@ -64,13 +63,13 @@
                                                 Fill="{TemplateBinding Foreground}"
                                                 RadiusY="11" 
                                                 RadiusX="11"/>
-                                            
+
                                             <TextBlock 
                                                 Foreground="Black"
                                                 Margin="10,5,0,0"
                                                 Background="Transparent"
                                                 Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
-                                            
+
                                             <Button 
                                                 Style="{StaticResource CustromListItemButton}" 
                                                 Margin="7,0,0,5" 
@@ -78,7 +77,6 @@
                                                 Width="150" 
                                                 HorizontalAlignment="Left" 
                                                 VerticalAlignment="Bottom" 
-                                                Click="AddException_Click"
                                                 Content="Добавить в исключение" 
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
@@ -90,11 +88,10 @@
                                                 Width="150" 
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
-                                                Click="Delete_Click"
                                                 Content="Удалить"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
-                                            
+
                                         </Grid>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -118,4 +115,5 @@
             </Grid>
         </ScrollViewer>
     </Grid>
+
 </Page>

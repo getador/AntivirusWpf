@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using AntivirusLibrary.Workers;
 using AntivirusLibrary.Events;
+using System.Diagnostics;
+using System.Threading;
+using System.Management.Automation;
+
 
 namespace AntivirusLibrary
 {
@@ -28,6 +32,7 @@ namespace AntivirusLibrary
             countThread = CountThread;
             Counter = new CounterWorker();
             SignatureString = signatureString;
+            SetDefaultSettings();
         }
         /// <summary>
         /// Сканирование файла
@@ -90,12 +95,15 @@ namespace AntivirusLibrary
             SignaturesArray = new FileWithSignature[countThread][];
             for (int i = 0; i < SignaturesArray.Length; i++)
             {
-                SignaturesArray[i] = new FileWithSignature[listLength/ SignaturesArray.Length];
-                for (int j = 0; j < SignaturesArray[i].Length; j++)
-                {
-                    SignaturesArray[i][j] = new VirusFile(ListWithPath[j]);
-                }
-                ListWithPath.RemoveRange(0,SignaturesArray[i].Length);
+                SignaturesArray[i] = ListWithPath.GetRange(0, listLength / SignaturesArray.Length).Select(x => new VirusFile(x)).ToArray();
+                ListWithPath.RemoveRange(0, SignaturesArray[i].Length);
+
+                //SignaturesArray[i] = new FileWithSignature[listLength / SignaturesArray.Length];
+                //for (int j = 0; j < SignaturesArray[i].Length; j++)
+                //{
+                //    SignaturesArray[i][j] = new VirusFile(ListWithPath[j]);
+                //}
+                //ListWithPath.RemoveRange(0, SignaturesArray[i].Length);
             }
             SignaturesArray = SignaturesArray.Select(x => x.Where(y => y.Signature != null).ToArray()).ToArray();
             Workers = new VirusWorker[SignaturesArray.Length];
@@ -107,6 +115,85 @@ namespace AntivirusLibrary
                 Workers[i].Start();
             }
         }
+        
+        public void ScanProcess()
+        {
+            while (true)
+            {
+                foreach (var process in Process.GetProcesses().Where(x=>!DangerProcess.Select(y=>y.Process.ProcessName).ToArray().Contains(x.ProcessName)).ToArray())
+                {
+                    try
+                    {
+                        bool notFindInException = true;
+                        foreach (var exception in ExceptionFiles)
+                        {
+                            if (process.MainModule.FileName.Contains(exception.Path))
+                            {
+                                notFindInException = false;
+                                DangerProcess.RemoveAll(x => x.Process.ProcessName == process.ProcessName);
+                                FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
+                                break;
+                            }
+                        }
+
+                        //if (DangerProcess.Where(x => x.Path == process.MainModule.FileName).ToArray().Length != 0)
+                        //{
+                        //    notFindInException = false;
+                        //}
+
+                        if (notFindInException && !FileValidater.VerifyAuthenticodeSignature(process.MainModule.FileName))
+                        {
+                            string fileSignature = File.ReadAllText(process.MainModule.FileName);
+                            bool findSignature = false;
+                            if (SignatureString.Contains(process.MainModule.FileName))
+                                findSignature = true;
+                            if (!findSignature)
+                                foreach (var signature in EvrizmSignature.signatures)
+                                {
+                                    if (fileSignature.Contains(signature))
+                                    {
+                                        findSignature = true;
+                                        break;
+                                    }
+                                }
+
+                            if (findSignature)
+                            {
+                                //DangerList.Invoke(new Action(() => DangerList.Items.Add(new FileWhichCheked(process.MainModule.FileName))));
+                                //DialogResult dialogResult = MessageBox.Show($"Найдена угроза в процессе {process.ProcessName}.\nНажмите \"Да\" для добавления процесса в иключение \nили нажмите \"Нет\" для его завершения",
+                                //    "Найдена угроза",
+                                //    MessageBoxButtons.YesNo);
+                                //if (dialogResult == DialogResult.Yes)
+                                //{
+                                //    loadedFileException.Add(new FileWhichCheked(process.MainModule.FileName));
+                                //    using (FileStream stream = File.OpenWrite(Directory.GetCurrentDirectory() + "\\ExceptionFile.vih"))
+                                //    {
+                                //        BinaryFormatter formatter = new BinaryFormatter();
+                                //        formatter.Serialize(stream, loadedFileException);
+                                //    }
+                                //}
+                                //else if (dialogResult == DialogResult.No)
+                                //{
+                                //    //process.Kill();
+                                //}
+                                if (CloseProcessTurn)
+                                    process.Kill();
+                                else
+                                    AddInDangerProcessList(new ProcessDange(process));
+                                if (SoundTurn)
+                                    Console.Beep();
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                Thread.Sleep(500);
+            }
+
+        }
+
         /// <summary>
         /// Отчистка списка вирусов
         /// </summary>
@@ -114,6 +201,21 @@ namespace AntivirusLibrary
         {
             DangerFiles = new List<FileWithSignature>();
             FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
+        }
+        public void AddInDangerProcessList(ProcessDange process)
+        {
+            DangerProcess.Add((ProcessDange)process.Clone());
+            FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(true));
+        }
+        public void KillProcess(Process process)
+        {
+            process.Kill();
+            FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
+        }
+        public void KillProcess(ProcessDange process)
+        {
+            process.KillProcess();
+            FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
         }
         public void AddInDangerFile(object sender, FindDangerEventArgs e)
         {
@@ -123,12 +225,24 @@ namespace AntivirusLibrary
 
         public void AddInException(object sender, ExceptionAddEventArgs e)
         {
-            ExceptionFiles.Add((ExceptionFile)e.FileWithException.Clone());
+            //ExceptionFiles.Add((ExceptionFile)e.FileWithException.Clone());
             DangerFiles.RemoveAll(x => x.Path == e.FileWithException.Path);
             FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(false));
         }
+        #region Settings
+            #region ProcessSettings
+            public bool SoundTurn { get; set; }
+            public bool CloseProcessTurn { get; set; }
+            #endregion
+        private void SetDefaultSettings(bool soundTurn = true, bool closeProcessTurn = false)
+        {
+            SoundTurn = soundTurn;
+            CloseProcessTurn = closeProcessTurn;
+        }
+        #endregion
         #region Events
         public event EventHandler<FileCheckEventArgs> FileCheckedEvent;
+        public event EventHandler<AddDangerProcessEventArgs> FindDangerProcessEvent; 
         #endregion
         public CounterWorker Counter { get; set; }
         public List<ExceptionFile> ExceptionFiles { get; set; }

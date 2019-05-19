@@ -18,6 +18,10 @@ namespace AntivirusLibrary.Files
         {
             this.Path = Path;
         }
+        public override string ToString()
+        {
+            return Path; 
+        }
         public string Path { get; set; }
         ~ExceptionFile()
         {

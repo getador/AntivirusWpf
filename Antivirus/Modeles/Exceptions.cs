@@ -59,6 +59,12 @@ namespace Antivirus.Modeles
             SaveException(path);
         }
 
+        public void RemoveException(string path,string exception)
+        {
+            ExceptionFiles.RemoveAll(x => x.Path == exception);
+            SaveException(path);
+        }
+
         public void SaveException(string path)
         {
             XmlSerializer formatter = new XmlSerializer(typeof(Exceptions));

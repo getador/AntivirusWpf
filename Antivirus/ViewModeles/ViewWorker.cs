@@ -24,14 +24,14 @@ namespace Antivirus.ViewModeles
             virusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
             worker = new SettingsWorker();
             Pages = new List<Page>();
-            CreteAntiwirusWorker();
-            CreateVirusPage();
+            
             //VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
             //VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
             //SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
             ChangeInterfaceLanguage();
             indexLangItem = -1;
-            ExceptionFiles = worker.ExceptionsWork.ExceptionFiles;
+            ExceptionList = worker.ExceptionsWork.ExceptionFiles;
+            DangerProcessList = new List<AntivirusLibrary.ProcessDange>();
             for (int i = 0; i < ItemsFile.Count; i++)
             {
                 if (ItemsFile[i] == worker.SettingsLoaded.InterfaceLanguage)
@@ -42,7 +42,9 @@ namespace Antivirus.ViewModeles
             }
             //ItemsFile = worker.SaveFileName;
             //IndexLangItem = -1;
-
+            CreteAntiwirusWorker();
+            CreateVirusPage();
+            CreateDangerProcessPage();
         }
 
         private void CreteAntiwirusWorker()
@@ -51,6 +53,7 @@ namespace Antivirus.ViewModeles
             antivirusWorker.FileCheckedEvent += GetUpdateFile;
             antivirusWorker.Counter.CounterChangeEvent += GetCount;
             antivirusWorker.Counter.MaxValueChangeEvent += GetMaxValue;
+            antivirusWorker.FindDangerProcessEvent += UpdateDangerFiles;
             antivirusWorker.Counter.Reset();
         }
 
@@ -84,7 +87,30 @@ namespace Antivirus.ViewModeles
             {
                 Pages.Add(new Pages.VirusPage());
                 ((Pages.VirusPage)Pages[Pages.Count - 1]).AddFileInExceptionEvent += GetUpdateException;
+                ((Pages.VirusPage)Pages[Pages.Count - 1]).DeleteFileEvent += DeleteDangerFile;
                 SetDataContext();
+            }
+        }
+
+        private void CreateExceptionPage()
+        {
+            if (Pages.Where(x => x.Name == "ExceptionPageW").ToArray().Length == 0)
+            {
+                Pages.Add(new Pages.ExceptionPage());
+                ((Pages.ExceptionPage)Pages[Pages.Count - 1]).DeleteExceptionEvent += RemoveException;
+                //((Pages.ExceptionPage)Pages[Pages.Count - 1]).AddFileInExceptionEvent += GetUpdateException;
+                SetDataContext();
+            }
+        }
+
+        private void CreateDangerProcessPage()
+        {
+            if (Pages.Where(x => x.Name == "DangerProcessPageW").ToArray().Length == 0)
+            {
+                Pages.Add(new Pages.DangerProcessPage());
+                //((Pages.ExceptionPage)Pages[Pages.Count - 1]).AddFileInExceptionEvent += GetUpdateException;
+                SetDataContext();
+                Task.Run(() => antivirusWorker.ScanProcess());
             }
         }
 
@@ -207,6 +233,39 @@ namespace Antivirus.ViewModeles
             }
         }
 
+        public ICommand OpenExceptionPage
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    if (Pages.Where(x => x.Name == "ExceptionPageW").ToArray().Length > 0)
+                        CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "ExceptionPageW").index];
+                    else
+                    {
+                        CreateExceptionPage();
+                        CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "ExceptionPageW").index];
+                    }
+                });
+            }
+        }
+        public ICommand OpenDangerPricessPage
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    if (Pages.Where(x => x.Name == "DangerProcessPageW").ToArray().Length > 0)
+                        CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "DangerProcessPageW").index];
+                    else
+                    {
+                        CreateDangerProcessPage();
+                        CurrentPage = Pages[Pages.Select((x, i) => new { element = x, index = i }).First(x => x.element.Name == "DangerProcessPageW").index];
+                    }
+                });
+            }
+        }
+
         public ICommand SearchInCotalog
         {
             get
@@ -226,7 +285,6 @@ namespace Antivirus.ViewModeles
                     }
                 });
             }
-
         }
 
         public ICommand SearchInFile
@@ -249,12 +307,46 @@ namespace Antivirus.ViewModeles
             }
         }
 
-        public ICommand AddInException
+        public ICommand AddCotalogException
         {
             get
             {
                 return new ButtonViewCommand((obj) =>
                 {
+                    using (FolderBrowserDialog browserDialog = new FolderBrowserDialog())
+                    {
+                        if (browserDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            if (!worker.ExceptionsWork.ExceptionFiles.Select(x => x.Path).Contains(browserDialog.SelectedPath))
+                            {
+                                worker.ExceptionsWork.AddException(Environment.CurrentDirectory + @"\exception.cfg", browserDialog.SelectedPath);
+                                antivirusWorker.AddInException(this, new AntivirusLibrary.Events.ExceptionAddEventArgs(new AntivirusLibrary.Files.ExceptionFile(browserDialog.SelectedPath)));
+                                UpdateExceptionFiles(true);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        public ICommand AddFileException
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    {
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            if (!worker.ExceptionsWork.ExceptionFiles.Select(x => x.Path).Contains(openFileDialog.FileName))
+                            {
+                                worker.ExceptionsWork.AddException(Environment.CurrentDirectory + @"\exception.cfg", openFileDialog.FileName);
+                                antivirusWorker.AddInException(this, new AntivirusLibrary.Events.ExceptionAddEventArgs(new AntivirusLibrary.Files.ExceptionFile(openFileDialog.FileName)));
+                                UpdateExceptionFiles(true);
+                            }
+                        }
+                    }
                 });
             }
         }
@@ -271,21 +363,82 @@ namespace Antivirus.ViewModeles
             }
         }
 
-        private List<AntivirusLibrary.Files.ExceptionFile> exceptionFiles;
-        public List<AntivirusLibrary.Files.ExceptionFile> ExceptionFiles
+        private List<AntivirusLibrary.Files.ExceptionFile> exceptionList;
+        public List<AntivirusLibrary.Files.ExceptionFile> ExceptionList
         {
-            get { return exceptionFiles; }
+            get { return exceptionList; }
             set
             {
-                exceptionFiles = value;
-                OnPropertyChanged("ExceptionFiles");
+                exceptionList = value;
+                OnPropertyChanged("ExceptionList");
             }
         }
 
-        private void UpdateExceptionFiles()
+        private List<AntivirusLibrary.ProcessDange> dangerProcessList;
+        public List<AntivirusLibrary.ProcessDange> DangerProcessList
         {
-            ExceptionFiles = worker.ExceptionsWork.ExceptionFiles;
+            get { return dangerProcessList; }
+            set
+            {
+                dangerProcessList = value;
+                OnPropertyChanged("DangerProcessList");
+            }
         }
+
+        private void UpdateExceptionFiles(bool state)
+        {
+            List<AntivirusLibrary.Files.ExceptionFile> newList;
+            if (state)
+                newList = new List<AntivirusLibrary.Files.ExceptionFile>(exceptionList.Select(x => (AntivirusLibrary.Files.ExceptionFile)x.Clone()));
+            else
+                newList = new List<AntivirusLibrary.Files.ExceptionFile>();
+
+            if (worker.ExceptionsWork.ExceptionFiles.Count != 0)
+            {
+                AntivirusLibrary.Files.ExceptionFile[] copyDangerFile = worker.ExceptionsWork.ExceptionFiles.Where(x => !newList.Select(y => y.Path).ToArray().Contains(x.Path)).ToArray();
+                for (int i = 0; i < copyDangerFile.Length; i++)
+                {
+                    newList.Add((AntivirusLibrary.Files.ExceptionFile)copyDangerFile[i].Clone());
+                }
+            }
+            else
+            {
+                newList = new List<AntivirusLibrary.Files.ExceptionFile>();
+            }
+
+            ExceptionList = newList;
+
+            if (dangerProcessList.Where(x=>exceptionList.Select(y=>y.Path).Contains(x.Path)).ToArray().Length!=0)
+            {
+                antivirusWorker.DangerProcess.RemoveAll(x => exceptionList.Select(y => y.Path).Contains(x.Path));
+                UpdateDangerProcessList(new AntivirusLibrary.Events.AddDangerProcessEventArgs(false));
+            }
+        }
+
+        private void UpdateDangerProcessList(AntivirusLibrary.Events.AddDangerProcessEventArgs e)
+        {
+            List<AntivirusLibrary.ProcessDange> newList;
+            if (e.Status)
+                newList = new List<AntivirusLibrary.ProcessDange>(dangerProcessList.Select(x => (AntivirusLibrary.ProcessDange)x.Clone()));
+            else
+                newList = new List<AntivirusLibrary.ProcessDange>();
+
+            if (antivirusWorker.DangerProcess.Count != 0)
+            {
+                AntivirusLibrary.ProcessDange[] copyDangerFile = antivirusWorker.DangerProcess.Where(x => !newList.Select(y => y.Process.ProcessName).ToArray().Contains(x.Process.ProcessName)).ToArray();
+                for (int i = 0; i < copyDangerFile.Length; i++)
+                {
+                    newList.Add((AntivirusLibrary.ProcessDange)copyDangerFile[i].Clone());
+                }
+            }
+            else
+            {
+                newList = new List<AntivirusLibrary.ProcessDange>();
+            }
+
+            DangerProcessList = newList;
+        }
+
 
         private Page currentPage;
         public Page CurrentPage
@@ -362,9 +515,28 @@ namespace Antivirus.ViewModeles
             {
                 worker.ExceptionsWork.AddException(Environment.CurrentDirectory + @"\exception.cfg", e.Path);
                 antivirusWorker.AddInException(this, new AntivirusLibrary.Events.ExceptionAddEventArgs(new AntivirusLibrary.Files.ExceptionFile(e.Path)));
-                UpdateExceptionFiles();
+                UpdateExceptionFiles(true);
             }
         }
+
+        public void RemoveException(object sender, AntivirusLibrary.Events.AddFileInExceptionEventArgs e)
+        {
+            worker.ExceptionsWork.RemoveException(Environment.CurrentDirectory + @"\exception.cfg", e.Path);
+            UpdateExceptionFiles(false);
+        }
+
+        public void DeleteDangerFile(object sender,AntivirusLibrary.Events.AddFileInExceptionEventArgs e)
+        {
+            antivirusWorker.DangerFiles.FirstOrDefault(x => x.Path == e.Path).DeleteFile();
+            antivirusWorker.DangerFiles = antivirusWorker.DangerFiles.Where(x => x.Path != null).ToList();
+            GetUpdateFile(this, new AntivirusLibrary.Events.FileCheckEventArgs(false));
+        }
+
+        public void UpdateDangerFiles(object sender, AntivirusLibrary.Events.AddDangerProcessEventArgs e)
+        {
+            UpdateDangerProcessList(e);
+        }
+
         #endregion
 
         #region Status

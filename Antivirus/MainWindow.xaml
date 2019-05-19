@@ -428,7 +428,7 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </Border.RenderTransform>
-            <Frame Content="{Binding CurrentPage}"/>
+            <Frame NavigationUIVisibility="Hidden"  Content="{Binding CurrentPage}"/>
         </Border>
         <!--
         <StackPanel x:Name="stackPanel" Background="#FF73DCD2" Orientation="Horizontal" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
@@ -455,8 +455,8 @@
                         <ImageBrush/>
                     </TextBlock.Background>
                 </TextBlock>
-                <Button Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" HorizontalAlignment="Left" Background="Black" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
-                <Button Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
+                <Button Command="{Binding OpenExceptionPage}" Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" HorizontalAlignment="Left" Background="Black" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
+                <Button Command="{Binding OpenDangerPricessPage}" Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
             </Grid>
         </Border>
         <StackPanel Orientation="Vertical" Background="#FF73DCD2" Height="29" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,0.4,0"/>

@@ -41,25 +41,28 @@ namespace AntivirusLibrary.Workers
         {
             for (int i = 0; i < FilesArray.Length; i++)
             {
-                bool findSignature = false;
-                if (File.Exists(FilesArray[i].Path))
+                if (!FileValidater.VerifyAuthenticodeSignature(FilesArray[i].Path))
                 {
-                    if (SignatureString.Contains(FilesArray[i].Signature))
+                    bool findSignature = false;
+                    if (File.Exists(FilesArray[i].Path))
                     {
-                        FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
-                        //VirusList.Add((VirusFile)FilesArray[i]);
-                        findSignature = true;
-                    }
-                    if (!findSignature)
-                    {
-                        string fileSignature = File.ReadAllText(FilesArray[i].Path);
-                        foreach (var signature in EvrizmSignature.signatures)
+                        if (SignatureString.Contains(FilesArray[i].Signature))
                         {
-                            if (fileSignature.Contains(signature))
+                            FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
+                            //VirusList.Add((VirusFile)FilesArray[i]);
+                            findSignature = true;
+                        }
+                        if (!findSignature)
+                        {
+                            string fileSignature = File.ReadAllText(FilesArray[i].Path);
+                            foreach (var signature in EvrizmSignature.signatures)
                             {
-                                FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
-                                //VirusList.Add((VirusFile)FilesArray[i]);
-                                break;
+                                if (fileSignature.Contains(signature))
+                                {
+                                    FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
+                                    //VirusList.Add((VirusFile)FilesArray[i]);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -67,8 +70,10 @@ namespace AntivirusLibrary.Workers
                 FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
                 Thread.Sleep(50);
                 FilesArray[i] = null;
+                
             }
             FilesArray = null;
+            SignatureString = null;
         }
         private Task checkFileThread;
     }

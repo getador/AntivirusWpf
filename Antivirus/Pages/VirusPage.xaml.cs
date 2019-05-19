@@ -27,7 +27,7 @@ namespace Antivirus.Pages
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-
+            DeleteFileEvent?.Invoke(this, new AntivirusLibrary.Events.AddFileInExceptionEventArgs(((Button)sender).DataContext.ToString()));
         }
 
         private void AddException_Click(object sender, RoutedEventArgs e)

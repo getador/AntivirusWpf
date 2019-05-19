@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace AntivirusLibrary
 {
-    public class ProcessDange
+    public class ProcessDange:ICloneable
     {
-        private Process Process { get; set; }
-        private string Path { get; set; }
-        private string Signature { get; set; }
+        public Process Process { get; set; }
+        public string Path { get; set; }
+        public string Signature { get; set; }
         public ProcessDange(Process Process)
         {
             this.Process = Process;
@@ -26,6 +26,16 @@ namespace AntivirusLibrary
                 }
             }
         }
+        public override string ToString()
+        {
+            return Process.ProcessName;
+        }
+        public ProcessDange(Process process, string path, string signature)
+        {
+            Process = process;
+            Path = path;
+            Signature = signature;
+        }
 
         ~ProcessDange()
         {
@@ -35,6 +45,11 @@ namespace AntivirusLibrary
         public void KillProcess()
         {
             Process.Kill();
+        }
+
+        public object Clone()
+        {
+            return new ProcessDange(Process, Path, Signature);
         }
     }
 }
