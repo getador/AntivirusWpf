@@ -33,8 +33,8 @@ namespace Antivirus.Pages
         private void AddException_Click(object sender, RoutedEventArgs e)
         {
             AddFileInExceptionEvent?.Invoke(this, new AntivirusLibrary.Events.AddFileInExceptionEventArgs(((Button)sender).DataContext.ToString()));
+           // Content = "{Binding AddInExceptionButtonContext}"
         }
-
         public event EventHandler<AntivirusLibrary.Events.AddFileInExceptionEventArgs> AddFileInExceptionEvent;
         public event EventHandler<AntivirusLibrary.Events.AddFileInExceptionEventArgs> DeleteFileEvent;
     }

@@ -72,7 +72,8 @@
                                                 HorizontalAlignment="Left" 
                                                 VerticalAlignment="Bottom" 
                                                 Click="AddInException_Click"
-                                                Content="Добавить в исключение" 
+                                                Name="DangerProcessPageAddInException"
+                                                Content="{Binding AddInExceptionButtonContext}" 
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 
@@ -84,7 +85,8 @@
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Click="StopProcess_Click"
-                                                Content="Удалить"
+                                                Name="DangerProcessPageKill"
+                                                Content="{Binding KillProcessButtonContext}"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 

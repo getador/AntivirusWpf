@@ -17,20 +17,25 @@ namespace AntivirusLibrary.Workers
     /// </summary>
     public class VirusWorker
     {
-        public VirusWorker(string signatureString, params FileWithSignature[] filesArray)
+        public VirusWorker(string signatureString, bool evrizmM, bool signatureM,bool autoDeleteVirus, params FileWithSignature[] filesArray)
         {
             SignatureString = signatureString;
             //VirusList = new List<VirusFile>();
             FilesArray = filesArray;
-            checkFileThread = new Task(() => CheckFiles());
+            cancellationTokenSource = new CancellationTokenSource();
+            CheckFileThread = new Task(() => CheckFiles(),cancellationTokenSource.Token);
+            this.evrizmM = evrizmM;
+            this.signatureM = signatureM;
+            this.autoDeleteVirus = autoDeleteVirus;
         }
         public void StopScan()
         {
-            checkFileThread.Dispose();
+            //CheckFileThread.Dispose();
+            cancellationTokenSource.Cancel();
         }
         public void Start()
         {
-            checkFileThread.Start();
+            CheckFileThread.Start();
         }
         public event EventHandler<FindDangerEventArgs> FindDangerEvent;
         public event EventHandler<FileCheckEventArgs> FileCheckedEvent;
@@ -41,40 +46,57 @@ namespace AntivirusLibrary.Workers
         {
             for (int i = 0; i < FilesArray.Length; i++)
             {
+                if (cancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    break;
+                }
                 if (!FileValidater.VerifyAuthenticodeSignature(FilesArray[i].Path))
                 {
                     bool findSignature = false;
                     if (File.Exists(FilesArray[i].Path))
                     {
-                        if (SignatureString.Contains(FilesArray[i].Signature))
-                        {
-                            FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
-                            //VirusList.Add((VirusFile)FilesArray[i]);
-                            findSignature = true;
-                        }
-                        if (!findSignature)
-                        {
-                            string fileSignature = File.ReadAllText(FilesArray[i].Path);
-                            foreach (var signature in EvrizmSignature.signatures)
+                        if (signatureM)
+                            if (SignatureString.Contains(FilesArray[i].Signature))
                             {
-                                if (fileSignature.Contains(signature))
-                                {
+                                if (autoDeleteVirus)
+                                    FilesArray[i].DeleteFile();
+                                else
                                     FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
-                                    //VirusList.Add((VirusFile)FilesArray[i]);
-                                    break;
+                                //VirusList.Add((VirusFile)FilesArray[i]);
+                                findSignature = true;
+                            }
+                        if (evrizmM)
+                            if (!findSignature)
+                            {
+                                string fileSignature = File.ReadAllText(FilesArray[i].Path);
+                                foreach (var signature in EvrizmSignature.signatures)
+                                {
+                                    if (fileSignature.Contains(signature))
+                                    {
+                                        if (autoDeleteVirus)
+                                            FilesArray[i].DeleteFile();
+                                        else
+                                            FindDangerEvent?.Invoke(this, new FindDangerEventArgs(FilesArray[i]));
+                                        //VirusList.Add((VirusFile)FilesArray[i]);
+                                        break;
+                                    }
                                 }
                             }
-                        }
                     }
                 }
                 FileCheckedEvent?.Invoke(this, new FileCheckEventArgs(true));
                 Thread.Sleep(50);
                 FilesArray[i] = null;
-                
             }
             FilesArray = null;
             SignatureString = null;
+            cancellationTokenSource.Cancel();
         }
-        private Task checkFileThread;
+
+        public Task CheckFileThread { get; set; }
+        private bool signatureM;
+        private bool evrizmM;
+        private bool autoDeleteVirus;
+        private CancellationTokenSource cancellationTokenSource;
     }
 }

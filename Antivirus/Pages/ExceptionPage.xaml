@@ -41,8 +41,9 @@
         </Grid.RowDefinitions>
         <Border Margin="0,0,0,6">
             <Grid>
-                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding AddCotalogException}" Content="Добавить каталог" Width="100" Margin="30,10,0,10"/>
-                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding AddFileException}" Content="Добавить файл" Width="100" Margin="150,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding AddCotalogException}" Content="{Binding AddCotalogInExceptionButtonContext}" Width="100" Margin="30,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding AddFileException}" Content="{Binding AddFileInExceptionButtonContext}" Width="100" Margin="150,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding DeleteAllException}" Content="{Binding DeleteAllButtonContext}" Width="100" Margin="270,10,0,10"/>
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,19.6" Grid.Row="1">
@@ -79,7 +80,8 @@
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Click="DeleteException_Click"
-                                                Content="Удалить"
+                                                Name="ExceptionPageDelte"
+                                                Content="{Binding DeleteButtonContext}"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 

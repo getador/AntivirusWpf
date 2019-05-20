@@ -41,18 +41,19 @@
         </Grid.RowDefinitions>
         <Border Margin="0,0,0,6">
             <Grid>
-                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInCotalog}" Content="Проверить каталог" Width="100" Margin="30,10,0,10"/>
-                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInFile}" Content="Проверить файл" Width="100" Margin="150,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInCotalog}" Content="{Binding ScanCotalogButtonContext}" Width="100" Margin="30,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding SearchInFile}" Content="{Binding ScanFileButtonContext}" Width="100" Margin="150,10,0,10"/>
+                <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding DeleteAllVirusFile}" Content="{Binding DeleteAllButtonContext}" Width="100" Margin="270,10,0,10"/>
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,19.6" Grid.Row="1">
             <Grid>
-                <ListView ItemsSource="{Binding VirusList}" Foreground="AliceBlue">
+                <ListView Name="qwer" ItemsSource="{Binding VirusList}" Foreground="AliceBlue">
                     <ListView.Background>
                         <ImageBrush/>
                     </ListView.Background>
                     <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
+                        <Style x:Name="qwer1" TargetType="{x:Type ListViewItem}">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -79,7 +80,9 @@
                                                 HorizontalAlignment="Left" 
                                                 VerticalAlignment="Bottom" 
                                                 Click="AddException_Click"
-                                                Content="Добавить в исключение" 
+                                                Name="VirusPageAddInException"
+                                                Content="{Binding AddInExceptionButtonContext}"
+                                                
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 
@@ -91,7 +94,8 @@
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Click="Delete_Click"
-                                                Content="Удалить"
+                                                Name="VirusPageDelete"
+                                                Content="{Binding DeleteButtonContext}"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
                                             

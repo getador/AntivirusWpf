@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -78,6 +79,19 @@ namespace Antivirus.ViewModeles
         public void ChangeInterfaceLanguage()
         {
             SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
+            DangerFileButtonText = worker.UsedLanguage.DangerFileButtonText;
+            ExceptionFileButtonText = worker.UsedLanguage.ExceptionFileButtonText;
+            DangerProcessButtonText = worker.UsedLanguage.DangerProcessButtonText;
+            StopButtonContext = worker.UsedLanguage.StopButtonContext;
+            DeleteButtonContext = worker.UsedLanguage.DeleteButtonContext;
+            AddInExceptionButtonContext = worker.UsedLanguage.AddInExceptionButtonContext;
+            ////((Pages.VirusPage)Pages.Where(x=>x.Name== "VirusPageW").FirstOrDefault()).
+            KillProcessButtonContext = worker.UsedLanguage.KillProcessButtonContext;
+            ScanCotalogButtonContext = worker.UsedLanguage.ScanCotalogButtonContext;
+            ScanFileButtonContext = worker.UsedLanguage.ScanFileButtonContext;
+            AddCotalogInExceptionButtonContext = worker.UsedLanguage.AddCotalogInExceptionButtonContext;
+            AddFileInExceptionButtonContext = worker.UsedLanguage. AddFileInExceptionButtonContext;
+            DeleteAllButtonContext = worker.UsedLanguage.DeleteAllButtonContext;
         }
 
         #region CreatePages
@@ -146,6 +160,219 @@ namespace Antivirus.ViewModeles
             }
         }
 
+        private string dangerFileButtonText;
+        public string DangerFileButtonText
+        {
+            get { return dangerFileButtonText; }
+            set
+            {
+                if (value == dangerFileButtonText)
+                    return;
+                dangerFileButtonText = value;
+                OnPropertyChanged("DangerFileButtonText");
+            }
+        }
+
+        private string exceptionFileButtonText;
+        public string ExceptionFileButtonText
+        {
+            get { return exceptionFileButtonText; }
+            set
+            {
+                if (value == exceptionFileButtonText)
+                    return;
+                exceptionFileButtonText = value;
+                OnPropertyChanged("ExceptionFileButtonText");
+            }
+        }
+
+        private string dangerProcessButtonText;
+        public string DangerProcessButtonText
+        {
+            get { return dangerProcessButtonText; }
+            set
+            {
+                if (value == dangerProcessButtonText)
+                    return;
+                dangerProcessButtonText = value;
+                OnPropertyChanged("DangerProcessButtonText");
+            }
+        }
+
+        private string stopButtonContext;
+        public string StopButtonContext
+        {
+            get { return stopButtonContext; }
+            set
+            {
+                if (value == stopButtonContext)
+                    return;
+                stopButtonContext = value;
+                OnPropertyChanged("StopButtonContext");
+            }
+        }
+
+        private string deleteButtonContext;
+        public string DeleteButtonContext
+        {
+            get { return deleteButtonContext; }
+            set
+            {
+                if (value == deleteButtonContext)
+                    return;
+                deleteButtonContext = value;
+                OnPropertyChanged("DeleteButtonContext");
+            }
+        }
+
+        private string addInExceptionButtonContext;
+        public string AddInExceptionButtonContext
+        {
+            get { return addInExceptionButtonContext; }
+            set
+            {
+                if (value == addInExceptionButtonContext)
+                    return;
+                addInExceptionButtonContext = value;
+                OnPropertyChanged("AddInExceptionButtonContext");
+            }
+        }
+
+        private string killProcessButtonContext;
+        public string KillProcessButtonContext
+        {
+            get { return killProcessButtonContext; }
+            set
+            {
+                if (value == killProcessButtonContext)
+                    return;
+                killProcessButtonContext = value;
+                OnPropertyChanged("KillProcessButtonContext");
+            }
+        }
+
+        private string scanCotalogButtonContext;
+        public string ScanCotalogButtonContext
+        {
+            get { return scanCotalogButtonContext; }
+            set
+            {
+                if (value == scanCotalogButtonContext)
+                    return;
+                scanCotalogButtonContext = value;
+                OnPropertyChanged("ScanCotalogButtonContext");
+            }
+        }
+
+        private string scanFileButtonContext;
+        public string ScanFileButtonContext
+        {
+            get { return scanFileButtonContext; }
+            set
+            {
+                if (value == scanFileButtonContext)
+                    return;
+                scanFileButtonContext = value;
+                OnPropertyChanged("ScanFileButtonContext");
+            }
+        }
+
+        private string addCotalogInExceptionButtonContext;
+        public string AddCotalogInExceptionButtonContext
+        {
+            get { return addCotalogInExceptionButtonContext; }
+            set
+            {
+                if (value == addCotalogInExceptionButtonContext)
+                    return;
+                addCotalogInExceptionButtonContext = value;
+                OnPropertyChanged("AddCotalogInExceptionButtonContext");
+            }
+        }
+
+        private string addFileInExceptionButtonContext;
+        public string AddFileInExceptionButtonContext
+        {
+            get { return addFileInExceptionButtonContext; }
+            set
+            {
+                if (value == addFileInExceptionButtonContext)
+                    return;
+                addFileInExceptionButtonContext = value;
+                OnPropertyChanged("AddFileInExceptionButtonContext");
+            }
+        }
+
+        private string deleteAllButtonContext;
+        public string DeleteAllButtonContext
+        {
+            get { return deleteAllButtonContext; }
+            set
+            {
+                if (value == deleteAllButtonContext)
+                    return;
+                deleteAllButtonContext = value;
+                OnPropertyChanged("DeleteAllButtonContext");
+            }
+        }
+        #endregion
+
+        #region settingsValue
+        private bool autoVirusDelete;
+        public bool AutoVirusDelete
+        {
+            get { return autoVirusDelete; }
+            set
+            {
+                if (value == autoVirusDelete)
+                    return;
+                autoVirusDelete = value;
+                antivirusWorker.AutoDeleteVirus = autoVirusDelete;
+                OnPropertyChanged("AutoVirusDelete");
+            }
+        }
+
+        private bool signatureM;
+        public bool SignatureM
+        {
+            get { return signatureM; }
+            set
+            {
+                if (value == signatureM)
+                    return;
+                signatureM = value;
+                antivirusWorker.SignatureM = signatureM;
+                OnPropertyChanged("SignatureM");
+            }
+        }
+
+        private bool evrizmM;
+        public bool EvrizmM
+        {
+            get { return evrizmM; }
+            set
+            {
+                if (value == evrizmM)
+                    return;
+                evrizmM = value;
+                antivirusWorker.EvrizmM = evrizmM;
+                OnPropertyChanged("EvrizmM");
+            }
+        }
+
+        private string countOfThread;
+        public string CountOfThread
+        {
+            get { return countOfThread; }
+            set
+            {
+                if (value == countOfThread)
+                    return;
+                countOfThread = value;
+                antivirusWorker.CountThread = Convert.ToInt32(countOfThread);
+                OnPropertyChanged("CountOfThread");
+            }
+        }
         #endregion
 
         #region Language index
@@ -349,6 +576,57 @@ namespace Antivirus.ViewModeles
                             }
                         }
                     }
+                });
+            }
+        }
+
+        public ICommand StopScan
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    if (antivirusWorker.Workers != null && !antivirusWorker.Workers.All(x=>x.CheckFileThread.Status!=TaskStatus.Running))
+                    {
+                        if (new CustomMessageBox().ShopMessage("Отмена", "Отменить сканирование?", "Да", "Нет") == 1)
+                        {
+
+                            foreach (AntivirusLibrary.Workers.VirusWorker worker in antivirusWorker.Workers.Where(x => x.CheckFileThread.Status == TaskStatus.Running).ToArray())
+                            {
+                                worker.StopScan();
+                            }
+                            antivirusWorker.Counter.MaxValue = statusValue;
+
+                        }
+                    }
+                });
+            }
+        }
+        public ICommand DeleteAllException
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    worker.ExceptionsWork.ExceptionFiles.RemoveAll(x=>x.Path!=null);
+                    worker.ExceptionsWork.SaveException(Environment.CurrentDirectory + @"\exception.cfg");
+                    UpdateExceptionFiles(false);
+                });
+            }
+        }
+
+        public ICommand DeleteAllVirusFile
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    foreach (var item in antivirusWorker.DangerFiles)
+                    {
+                        item.DeleteFile();
+                    }
+                    antivirusWorker.DangerFiles = antivirusWorker.DangerFiles.Where(x => x.Path != null).ToList();
+                    GetUpdateFile(this, new AntivirusLibrary.Events.FileCheckEventArgs(false));
                 });
             }
         }

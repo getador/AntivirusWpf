@@ -30,7 +30,7 @@ namespace AntivirusLibrary
             DangerProcess = new List<ProcessDange>();
             ClearProcess = new List<Process>();
             this.ExceptionFiles = ExceptionFiles;
-            countThread = CountThread;
+            CountThread = CountThread;
             Counter = new CounterWorker();
             SignatureString = signatureString;
             SetDefaultSettings();
@@ -49,27 +49,35 @@ namespace AntivirusLibrary
             VirusFile fileForCheack = new VirusFile(path);
             bool findSignature = false;
             Counter.SetMaxValue(1, Enams.ResetStatus.Reset);
-            if (fileForCheack.Signature != null && SignatureString!=string.Empty)
-            {
-                if (SignatureString.Contains(fileForCheack.Signature))
+            if (SignatureM)
+                if (fileForCheack.Signature != null && SignatureString != string.Empty)
                 {
-                    DangerFiles.Add(fileForCheack);
-                    findSignature = true;
-                }
-            }
-            if (!findSignature)
-            {
-                string fileSignature = File.ReadAllText(fileForCheack.Path);
-                foreach (var signature in EvrizmSignature.signatures)
-                {
-                    if (fileSignature.Contains(signature))
+                    if (SignatureString.Contains(fileForCheack.Signature))
                     {
-                        AddInDangerFile(this,new FindDangerEventArgs(fileForCheack));
-                        //DangerFiles.Add(fileForCheack);
-                        break;
+                        if (AutoDeleteVirus)
+                            fileForCheack.DeleteFile();
+                        else
+                            DangerFiles.Add(fileForCheack);
+                        findSignature = true;
                     }
                 }
-            }
+            if (EvrizmM)
+                if (!findSignature)
+                {
+                    string fileSignature = File.ReadAllText(fileForCheack.Path);
+                    foreach (var signature in EvrizmSignature.signatures)
+                    {
+                        if (fileSignature.Contains(signature))
+                        {
+                            if (AutoDeleteVirus)
+                                fileForCheack.DeleteFile();
+                            else
+                                AddInDangerFile(this, new FindDangerEventArgs(fileForCheack));
+                            //DangerFiles.Add(fileForCheack);
+                            break;
+                        }
+                    }
+                }
             Counter.Inc();
         }
         /// <summary>
@@ -93,7 +101,7 @@ namespace AntivirusLibrary
 
             //Counter = new CounterWorker((double)listLength);
             Counter.SetMaxValue((double)listLength, Enams.ResetStatus.Reset);
-            SignaturesArray = new FileWithSignature[countThread][];
+            SignaturesArray = new FileWithSignature[CountThread][];
             for (int i = 0; i < SignaturesArray.Length; i++)
             {
                 SignaturesArray[i] = ListWithPath.GetRange(0, listLength / SignaturesArray.Length).Select(x => new VirusFile(x)).ToArray();
@@ -110,7 +118,7 @@ namespace AntivirusLibrary
             Workers = new VirusWorker[SignaturesArray.Length];
             for (int i = 0; i < SignaturesArray.Length; i++)
             {
-                Workers[i] = new VirusWorker(SignatureString, SignaturesArray[i]);
+                Workers[i] = new VirusWorker(SignatureString,EvrizmM,SignatureM,AutoDeleteVirus, SignaturesArray[i]);
                 Workers[i].FindDangerEvent += AddInDangerFile;
                 Workers[i].FileCheckedEvent += Counter.ChengeElement;
                 Workers[i].Start();
@@ -134,9 +142,6 @@ namespace AntivirusLibrary
 
                 if (processes.Length != 0)
                 {
-
-
-
                     foreach (var process in processes)
                     {
                         try
@@ -162,17 +167,19 @@ namespace AntivirusLibrary
                             {
                                 string fileSignature = File.ReadAllText(process.MainModule.FileName);
                                 bool findSignature = false;
-                                if (SignatureString.Contains(process.MainModule.FileName))
-                                    findSignature = true;
-                                if (!findSignature)
-                                    foreach (var signature in EvrizmSignature.signatures)
-                                    {
-                                        if (fileSignature.Contains(signature))
+                                if (SignatureM)
+                                    if (SignatureString.Contains(new ProcessDange(process).Signature))
+                                        findSignature = true;
+                                if (EvrizmM)
+                                    if (!findSignature)
+                                        foreach (var signature in EvrizmSignature.signatures)
                                         {
-                                            findSignature = true;
-                                            break;
+                                            if (fileSignature.Contains(signature))
+                                            {
+                                                findSignature = true;
+                                                break;
+                                            }
                                         }
-                                    }
 
                                 if (findSignature)
                                 {
@@ -262,11 +269,17 @@ namespace AntivirusLibrary
             #region ProcessSettings
             public bool SoundTurn { get; set; }
             public bool CloseProcessTurn { get; set; }
-            #endregion
-        private void SetDefaultSettings(bool soundTurn = true, bool closeProcessTurn = false)
+            public bool AutoDeleteVirus { get; set; }
+            public bool EvrizmM { get; set; }
+            public bool SignatureM { get; set; }
+        #endregion
+        private void SetDefaultSettings(bool soundTurn = true, bool closeProcessTurn = false, bool evrizmM = true, bool signatureM = true, bool autoDeleteVirus = false)
         {
             SoundTurn = soundTurn;
             CloseProcessTurn = closeProcessTurn;
+            EvrizmM = evrizmM;
+            SignatureM = signatureM;
+            AutoDeleteVirus = autoDeleteVirus;
         }
         #endregion
         #region Events
@@ -280,8 +293,8 @@ namespace AntivirusLibrary
         public List<Process> ClearProcess { get; set; } 
         public FileWithSignature[][] SignaturesArray { get; set; }
         public string SignatureString { get; set; }
-        private VirusWorker[] Workers;
-        private int countThread;
+        public VirusWorker[] Workers { get; set; }
+        public int CountThread { get; set; }
         /// <summary>
         /// Получение файлов из каталога и подкаталогов
         /// </summary>

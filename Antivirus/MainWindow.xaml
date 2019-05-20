@@ -57,7 +57,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="{x:Type CheckBox}">
+        <Style x:Key="CustomCheckBox" TargetType="{x:Type CheckBox}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -273,11 +273,19 @@
                         <Grid>
                             <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                                 <Grid>
-                                    <Rectangle HorizontalAlignment="Left" Margin="0,0,0,0" Width="22"/>
-                                    <Image VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Source="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="5,5,5,5"/>
+                                    <Rectangle HorizontalAlignment="Left" Margin="0,0,0,0" Width="{TemplateBinding Width}" Fill="{TemplateBinding Foreground}" Opacity="0.3"/>
+                                    <Image VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="35" Source="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="5,5,5,5" />
                                 </Grid>
                             </Border>
                         </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Foreground" Value="#FFA2A2A2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="false">
+                                <Setter Property="Foreground" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -385,7 +393,7 @@
                             <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                                 <Grid>
                                     <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" RadiusY="5" RadiusX="5"/>
-                                    <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,3,2,2"/>
+                                    <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,5,2,2"/>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -468,20 +476,36 @@
         -->
         <Border Height="40"  Margin="46,0,0,-0.4" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
             <Grid>
-                <ProgressBar Margin="20,7,80,7" Maximum="{Binding MaxStatusValue}" Value="{Binding StatusValue}"/>
-                <Button HorizontalAlignment="Right" Margin="0,7,20,7" Content="Отменить" Style="{StaticResource CustromButtonWithRectangle}"/>
+                <ProgressBar Foreground="#FF73DCD2" Margin="20,7,105,7" Maximum="{Binding MaxStatusValue}" Value="{Binding StatusValue}" Background="#FFE6E6E6"/>
+                <Button 
+                    HorizontalAlignment="Right" 
+                    Width="70"
+                    Margin="0,7,20,7" 
+                    Content="{Binding StopButtonContext}" 
+                    Command="{Binding StopScan}"
+                    Style="{StaticResource CustromButtonWithRectangle}"/>
             </Grid>
         </Border>
         <Border x:Name="stackPanel" Background="#FF73DCD2" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2" Width="46">
-            <Grid>
-                <Button Command="{Binding OpenVirusPage}" Tag="pack://application:,,,/Images/Virus.jpg" Content="Button" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,111,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
-                <TextBlock VerticalAlignment="Top" Margin="50,125,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="Вирусы" Width="100" HorizontalAlignment="Left">
+            <Grid Margin="0,0,0.4,-0.4">
+                <Button Command="{Binding OpenVirusPage}" Tag="pack://application:,,,/Images/Virus.jpg" Content="Button" Background="Black" Height="46" Margin="0,111,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
+                <TextBlock VerticalAlignment="Top" Margin="50,125,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="{Binding DangerFileButtonText}" Width="100" HorizontalAlignment="Left">
                     <TextBlock.Background>
                         <ImageBrush/>
                     </TextBlock.Background>
                 </TextBlock>
-                <Button Command="{Binding OpenExceptionPage}" Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" HorizontalAlignment="Left" Background="Black" Height="45" Margin="0,188.8,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
-                <Button Command="{Binding OpenDangerPricessPage}" Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" HorizontalAlignment="Left" Background="Black" Height="46" Margin="-0.4,271.2,0,0" Grid.Row="1" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top" Width="46"/>
+                <Button Command="{Binding OpenExceptionPage}" Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" Background="Black" Height="45" Margin="0,189,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
+                <TextBlock VerticalAlignment="Top" Margin="50,202,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="{Binding ExceptionFileButtonText}" Width="100" HorizontalAlignment="Left">
+                    <TextBlock.Background>
+                        <ImageBrush/>
+                    </TextBlock.Background>
+                </TextBlock>
+                <Button Command="{Binding OpenDangerPricessPage}" Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" Background="Black" Height="46" Margin="0,271,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
+                <TextBlock VerticalAlignment="Top" Margin="50,285,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="{Binding DangerProcessButtonText}" Width="100" HorizontalAlignment="Left">
+                    <TextBlock.Background>
+                        <ImageBrush/>
+                    </TextBlock.Background>
+                </TextBlock>
             </Grid>
         </Border>
         <StackPanel Orientation="Vertical" Background="#FF73DCD2" Height="29" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,0.4,0"/>
@@ -503,7 +527,7 @@
         </CheckBox>
         <Button x:Name="button1" Content="Button" Style="{DynamicResource ButtonStyle1}"  Command="{Binding Exit_Click}" HorizontalAlignment="Right" Width="29" Grid.Column="1"/>
         <Button x:Name="button" Command="{Binding Minimalize_Window}" Grid.Column="1" Margin="694.001,0,29.4,0" Style="{DynamicResource ButtonMinimulizerStyle1}"/>
-        <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349.6" Margin="0,-349.2,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="2" Background="#FF99BCB9" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
+        <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349" Margin="0,-349,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="3" Background="#FF99BCB9" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
             <Border.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -517,9 +541,18 @@
                     <ColumnDefinition Width="46*"/>
                     <ColumnDefinition Width="353*"/>
                 </Grid.ColumnDefinitions>
-                <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="156" Margin="10,10,0,0" VerticalAlignment="Top" Width="220.8" Grid.ColumnSpan="2"/>
-                <TextBlock Height="22" Margin="19,32,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="auto" Text="{Binding SettingsLanguageText}" FontSize="16"/>
-                <ComboBox ItemsSource="{Binding ItemsFile}" SelectedIndex="{Binding IndexLangItem}" Grid.Column="1" HorizontalAlignment="Left" Margin="18,32,0,0" VerticalAlignment="Top" Width="99"/>
+                <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="156" Margin="444,32,0,0" VerticalAlignment="Top" Width="221" Grid.Column="1">
+                    <Grid>
+                        <CheckBox Content="Авто удаление вируса" IsChecked="{Binding AutoVirusDelete}" Margin="5,10,10,0" VerticalContentAlignment="Center" VerticalAlignment="Top" FontSize="15"/>
+                        <CheckBox Content="Сигнатурная методика" IsChecked="{Binding SignatureM}" Margin="5,40,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="15"/>
+                        <CheckBox Content="Эвристическая методика" IsChecked="{Binding EvrizmM}" Margin="5,70,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="15"/>
+                        <TextBlock TextWrapping="Wrap" Text="Количество потоков на выполнение" VerticalAlignment="Bottom" TextAlignment="Center" FontSize="13" HorizontalAlignment="Left" Margin="5,0,0,14.6" Width="125"/>
+                        <TextBox PreviewTextInput="IsTextAllowed" Text="{Binding CountOfThread}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="70" VerticalContentAlignment="Center" Margin="5,0,5,23" Background="#FFB3E4DF"/>
+                    </Grid>
+                </Border>
+                <Label Content="Сканирование файлов" VerticalContentAlignment="Bottom" FontSize="16" Grid.Column="1" Margin="459,0,58.4,316.8"/>
+                <TextBlock Height="43" Margin="10,32,694.4,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="auto" Text="{Binding SettingsLanguageText}" FontSize="16" Grid.ColumnSpan="2"/>
+                <ComboBox ItemsSource="{Binding ItemsFile}" SelectedIndex="{Binding IndexLangItem}" Grid.Column="1" HorizontalAlignment="Left" Margin="17,32,0,0" VerticalAlignment="Top" Width="99"/>
             </Grid>
         </Border>
 

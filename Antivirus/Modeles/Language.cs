@@ -16,6 +16,20 @@ namespace Antivirus.Modeles
         public string LanguageName { get; set; }
         public string SettingsLanguageText { get; set; }
 
+
+        public string DangerFileButtonText { get; set; }
+        public string ExceptionFileButtonText { get; set; }
+        public string DangerProcessButtonText { get; set; }
+        public string StopButtonContext { get; set; }
+        public string DeleteButtonContext { get; set; }
+        public string AddInExceptionButtonContext { get; set; }
+        public string KillProcessButtonContext { get; set; }
+        public string ScanCotalogButtonContext { get; set; }
+        public string ScanFileButtonContext { get; set; }
+        public string AddCotalogInExceptionButtonContext { get; set; }
+        public string AddFileInExceptionButtonContext { get; set; }
+        public string DeleteAllButtonContext { get; set; }
+
         public Language()
         {
 
@@ -24,6 +38,37 @@ namespace Antivirus.Modeles
         public Language(string LanguageName)
         {
             this.LanguageName = LanguageName;
+        }
+
+        public Language(string languageName,
+                        string settingsLanguageText,
+                        string dangerFileButtonText,
+                        string exceptionFileButtonText,
+                        string dangerProcessButtonText,
+                        string stopButtonContext,
+                        string deleteButtonContext,
+                        string addInExceptionButtonContext,
+                        string killProcessButtonContext,
+                        string scanCotalogButtonContext,
+                        string scanFileButtonContext,
+                        string addCotalogInExceptionButtonContext,
+                        string addFileInExceptionButtonContext,
+                        string deleteAllButtonContext)
+        {
+            LanguageName = languageName;
+            SettingsLanguageText = settingsLanguageText;
+            DangerFileButtonText = dangerFileButtonText;
+            ExceptionFileButtonText = exceptionFileButtonText;
+            DangerProcessButtonText = dangerProcessButtonText;
+            StopButtonContext = stopButtonContext;
+            DeleteButtonContext = deleteButtonContext;
+            AddInExceptionButtonContext = addInExceptionButtonContext;
+            KillProcessButtonContext = killProcessButtonContext;
+            ScanCotalogButtonContext = scanCotalogButtonContext;
+            ScanFileButtonContext = scanFileButtonContext;
+            AddCotalogInExceptionButtonContext = addCotalogInExceptionButtonContext;
+            AddFileInExceptionButtonContext = addFileInExceptionButtonContext;
+            DeleteAllButtonContext = deleteAllButtonContext;
         }
 
         public static Language LoadLanguageFile(string path)
@@ -61,8 +106,7 @@ namespace Antivirus.Modeles
 
         public static void SaveLanguageEn()
         {
-            Language ExampleLanguage = new Language("En");
-            ExampleLanguage.SettingsLanguageText = "Language";
+            Language ExampleLanguage = new Language("En","Language","Virus","Exceptions","Process","Stop","Delete","Add in exception", "Kill process","Scan catalog","Scan file","Add catalog", "Add file","Delete all");
             XmlSerializer formatter = new XmlSerializer(typeof(Language));
             using (Stream stream = new FileStream(Environment.CurrentDirectory + @"\Language\"+"En.lang", FileMode.OpenOrCreate))
             {
@@ -72,8 +116,7 @@ namespace Antivirus.Modeles
 
         public static void SaveLanguageRu()
         {
-            Language ExampleLanguage = new Language("Ru");
-            ExampleLanguage.SettingsLanguageText = "Язык";
+            Language ExampleLanguage = new Language("Ru","Язык","Вирусы","Исключения","Процессы","Остановить","Удалить","Добавить в исключение","Завершить","Проверка каталога","Проверка файла","Добавить каталог", "Добавить файл","Удалить все");
             XmlSerializer formatter = new XmlSerializer(typeof(Language));
             using (Stream stream = new FileStream(Environment.CurrentDirectory + @"\Language\" + "Ru.lang", FileMode.OpenOrCreate))
             {
@@ -83,8 +126,9 @@ namespace Antivirus.Modeles
 
         public static void SaveLanguageExample()
         {
-            Language ExampleLanguage = new Language("Language Name");
-            ExampleLanguage.SettingsLanguageText = "Language label text";
+            Language ExampleLanguage = new Language("Language Name","Language label text","Context for button whitch open virus page","Context for button whitch open exception page"
+                ,"Context for button whitch open danger process","Stop scaning button","Delete element on list","Add element on list", "Kill element on list","Context for scan catalog button",
+                "Context for scan file button","Context for add cotalog in exception","Context for add file in exception","Delete all element in list");
             XmlSerializer formatter = new XmlSerializer(typeof(Language));
             using (Stream stream = new FileStream(Environment.CurrentDirectory+@"\Lenguage settings example.txt", FileMode.OpenOrCreate))
             {
