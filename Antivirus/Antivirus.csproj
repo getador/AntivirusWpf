@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="Modeles\Exceptions.cs" />
     <Compile Include="Modeles\Language.cs" />
+    <Compile Include="Modeles\ServerWorker.cs" />
     <Compile Include="Modeles\SettingsWorker.cs" />
     <Compile Include="Modeles\Settings.cs" />
     <Compile Include="Pages\DangerProcessPage.xaml.cs">

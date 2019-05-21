@@ -46,9 +46,9 @@
                 <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding DeleteAllException}" Content="{Binding DeleteAllButtonContext}" Width="100" Margin="270,10,0,10"/>
             </Grid>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,19.6" Grid.Row="1">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,45" Grid.Row="1">
             <Grid>
-                <ListView ItemsSource="{Binding ExceptionList}" Foreground="AliceBlue">
+                <ListView ItemsSource="{Binding ExceptionList}" Foreground="AliceBlue" Tag="{Binding DeleteButtonContext}">
                     <ListView.Background>
                         <ImageBrush/>
                     </ListView.Background>
@@ -81,7 +81,7 @@
                                                 VerticalAlignment="Bottom"
                                                 Click="DeleteException_Click"
                                                 Name="ExceptionPageDelte"
-                                                Content="{Binding DeleteButtonContext}"
+                                                Content="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 

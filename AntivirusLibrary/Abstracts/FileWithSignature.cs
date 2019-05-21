@@ -24,10 +24,17 @@ namespace AntivirusLibrary.Abstracts
             {
                 using (MD5 md5 = MD5.Create())
                 {
-                    using (Stream stream = File.OpenRead(path))
+                    try
                     {
-                        Signature = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-","");
-                        Path = path;
+                        using (Stream stream = File.OpenRead(path))
+                        {
+                            Signature = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
+                            Path = path;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Dispose();
                     }
                 }
             }

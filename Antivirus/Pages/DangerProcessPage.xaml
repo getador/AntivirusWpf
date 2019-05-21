@@ -38,9 +38,9 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,20,20,20">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,20,20,45">
             <Grid>
-                <ListView ItemsSource="{Binding DangerProcessList}" Foreground="AliceBlue">
+                <ListView ItemsSource="{Binding DangerProcessList}" Foreground="AliceBlue" SelectedValuePath="{Binding AddInExceptionButtonContext}" Tag="{Binding KillProcessButtonContext}">
                     <ListView.Background>
                         <ImageBrush/>
                     </ListView.Background>
@@ -73,7 +73,7 @@
                                                 VerticalAlignment="Bottom" 
                                                 Click="AddInException_Click"
                                                 Name="DangerProcessPageAddInException"
-                                                Content="{Binding AddInExceptionButtonContext}" 
+                                                Content="{Binding SelectedValuePath, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 
@@ -86,7 +86,7 @@
                                                 VerticalAlignment="Bottom"
                                                 Click="StopProcess_Click"
                                                 Name="DangerProcessPageKill"
-                                                Content="{Binding KillProcessButtonContext}"
+                                                Content="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                                 Opacity="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                 Tag="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
 

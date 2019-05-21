@@ -106,20 +106,21 @@
                                     <ImageBrush Stretch="None"/>
                                 </Rectangle.Stroke>
                             </Rectangle>
-                            <Rectangle Width="18.8" VerticalAlignment="Top" Canvas.Top="19.467" Height="5.866" HorizontalAlignment="Left" Fill="Black" Canvas.Left="13">
-                                <Rectangle.Stroke>
+                            <Rectangle Width="18.8" VerticalAlignment="Top" Height="5.867" HorizontalAlignment="Left" Stroke="Black" Canvas.Left="13" Canvas.Top="13">
+                                <Rectangle.Fill>
                                     <ImageBrush/>
-                                </Rectangle.Stroke>
+                                </Rectangle.Fill>
                             </Rectangle>
-                            <Rectangle Width="18.8" VerticalAlignment="Top" Height="5.867" HorizontalAlignment="Left" Fill="Black" Canvas.Left="13" Canvas.Top="13.6">
-                                <Rectangle.Stroke>
-                                    <ImageBrush Stretch="None"/>
-                                </Rectangle.Stroke>
-                            </Rectangle>
-                            <Rectangle Width="18.8" VerticalAlignment="Top" Canvas.Top="25.333" Height="5.867" HorizontalAlignment="Left" Fill="Black" Canvas.Left="13">
-                                <Rectangle.Stroke>
+                            <Rectangle Width="18.8" VerticalAlignment="Top" Canvas.Top="20" Height="5.866" HorizontalAlignment="Left" Canvas.Left="13" Stroke="Black">
+                                <Rectangle.Fill>
                                     <ImageBrush/>
-                                </Rectangle.Stroke>
+                                </Rectangle.Fill>
+                            </Rectangle>
+
+                            <Rectangle Width="18.8" VerticalAlignment="Top" Canvas.Top="27" Height="5.867" HorizontalAlignment="Left" Stroke="Black" Canvas.Left="13">
+                                <Rectangle.Fill>
+                                    <ImageBrush/>
+                                </Rectangle.Fill>
                             </Rectangle>
                         </Canvas>
                     </ControlTemplate>
@@ -273,7 +274,7 @@
                         <Grid>
                             <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                                 <Grid>
-                                    <Rectangle HorizontalAlignment="Left" Margin="0,0,0,0" Width="{TemplateBinding Width}" Fill="{TemplateBinding Foreground}" Opacity="0.3"/>
+                                    <Rectangle Margin="0,0,0,0" Width="{TemplateBinding Width}" Fill="{TemplateBinding Foreground}" Opacity="0.3"/>
                                     <Image VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="35" Source="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="5,5,5,5" />
                                 </Grid>
                             </Border>
@@ -407,6 +408,16 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Storyboard x:Key="ServerOn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="border3">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="-40.336"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="ServerOff">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="border3">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
 
     </Window.Resources>
     <Window.Triggers>
@@ -421,6 +432,12 @@
         </EventTrigger>
         <EventTrigger RoutedEvent="ToggleButton.Unchecked" SourceName="checkBox">
             <BeginStoryboard x:Name="MenuClose_BeginStoryboard" Storyboard="{StaticResource MenuClose}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ToggleButton.Unchecked" SourceName="checkBox2">
+            <BeginStoryboard x:Name="ServerOff_BeginStoryboard" Storyboard="{StaticResource ServerOff}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="checkBox2">
+            <BeginStoryboard Storyboard="{StaticResource ServerOn}"/>
         </EventTrigger>
     </Window.Triggers>
     <Window.DataContext>
@@ -451,7 +468,7 @@
                 <ImageBrush/>
             </Border.Background>
         </Border>
-        <Border x:Name="border2" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="380.7" Margin="45.6,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="754.4" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
+        <Border x:Name="border2" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="421" Margin="46,0.2,0,-0.4" Grid.Row="1" VerticalAlignment="Top" Width="754" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
             <Border.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -486,33 +503,47 @@
                     Style="{StaticResource CustromButtonWithRectangle}"/>
             </Grid>
         </Border>
+        <Border x:Name="border3" Background="Yellow" Height="40" Margin="94.6,421.2,173,-40.4" Grid.Column="1" Grid.Row="1" RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+            <Grid>
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="20,8,0,8" Width="90" Height="25" Text="{Binding ServerIp}" VerticalContentAlignment="Center" FontSize="16"/>
+                <Button HorizontalAlignment="Left" Margin="130,0,0,0" Style="{StaticResource CustromButtonWithRectangle}" Width="90" Height="25" Content="{Binding SendVirusContent}"/>
+            </Grid>
+        </Border>
         <Border x:Name="stackPanel" Background="#FF73DCD2" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2" Width="46">
             <Grid Margin="0,0,0.4,-0.4">
-                <Button Command="{Binding OpenVirusPage}" Tag="pack://application:,,,/Images/Virus.jpg" Content="Button" Background="Black" Height="46" Margin="0,111,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
                 <TextBlock VerticalAlignment="Top" Margin="50,125,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="{Binding DangerFileButtonText}" Width="100" HorizontalAlignment="Left">
                     <TextBlock.Background>
                         <ImageBrush/>
                     </TextBlock.Background>
                 </TextBlock>
-                <Button Command="{Binding OpenExceptionPage}" Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" Background="Black" Height="45" Margin="0,189,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
+                <Button Command="{Binding OpenVirusPage}" Tag="pack://application:,,,/Images/Virus.jpg" Content="Button" Background="Black" Height="46" Margin="0,111,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
                 <TextBlock VerticalAlignment="Top" Margin="50,202,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="{Binding ExceptionFileButtonText}" Width="100" HorizontalAlignment="Left">
                     <TextBlock.Background>
                         <ImageBrush/>
                     </TextBlock.Background>
                 </TextBlock>
-                <Button Command="{Binding OpenDangerPricessPage}" Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" Background="Black" Height="46" Margin="0,271,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
+                <Button Command="{Binding OpenExceptionPage}" Content="Button" Tag="pack://application:,,,/Images/Exception.jpg" Background="Black" Height="45" Margin="0,189,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
                 <TextBlock VerticalAlignment="Top" Margin="50,285,0,0" Height="46" FontSize="14" TextWrapping="Wrap" Text="{Binding DangerProcessButtonText}" Width="100" HorizontalAlignment="Left">
                     <TextBlock.Background>
                         <ImageBrush/>
                     </TextBlock.Background>
                 </TextBlock>
+                <Button Command="{Binding OpenDangerPricessPage}" Content="Button" Tag="pack://application:,,,/Images/DangerProject.jpg" Background="Black" Height="46" Margin="0,271,0.4,0" Style="{StaticResource CustomMenuButton}" VerticalAlignment="Top"/>
             </Grid>
         </Border>
         <StackPanel Orientation="Vertical" Background="#FF73DCD2" Height="29" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,0.4,0"/>
         <Border Background="#FF73DCD2" Height="29" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,0.4,0">
             <Grid>
                 <CheckBox x:Name="checkBox1" Content="CheckBox" Margin="0,2,23.4,-0.2" Style="{DynamicResource CheckBoxSettingsStatusStyle}" Tag="pack://application:,,,/Images/Settings.jpg"/>
-                <CheckBox Content="CheckBox" Margin="23,2,0.4,-0.2" Style="{DynamicResource CheckBoxServerStatusStyle}" Tag="pack://application:,,,/Images/Server.jpg"/>
+                <CheckBox x:Name="checkBox2" Content="CheckBox" Margin="23,2,0.4,-0.2" Style="{DynamicResource CheckBoxServerStatusStyle}" Tag="pack://application:,,,/Images/Server.jpg"/>
             </Grid>
         </Border>
         <CheckBox x:Name="checkBox" IsChecked="False" Content="CheckBox" Margin="-0.4,0.2,0,0" Grid.Row="1" Style="{DynamicResource MenuStatusStyle1}" HorizontalAlignment="Left" Width="46" Height="45" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
@@ -543,16 +574,17 @@
                 </Grid.ColumnDefinitions>
                 <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="156" Margin="444,32,0,0" VerticalAlignment="Top" Width="221" Grid.Column="1">
                     <Grid>
-                        <CheckBox Content="Авто удаление вируса" IsChecked="{Binding AutoVirusDelete}" Margin="5,10,10,0" VerticalContentAlignment="Center" VerticalAlignment="Top" FontSize="15"/>
-                        <CheckBox Content="Сигнатурная методика" IsChecked="{Binding SignatureM}" Margin="5,40,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="15"/>
-                        <CheckBox Content="Эвристическая методика" IsChecked="{Binding EvrizmM}" Margin="5,70,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="15"/>
-                        <TextBlock TextWrapping="Wrap" Text="Количество потоков на выполнение" VerticalAlignment="Bottom" TextAlignment="Center" FontSize="13" HorizontalAlignment="Left" Margin="5,0,0,14.6" Width="125"/>
+                        <CheckBox Content="{Binding AutoDeleteVirusFileSetttingsText}" IsChecked="{Binding AutoVirusDelete}" Margin="5,10,10,0" VerticalContentAlignment="Center" VerticalAlignment="Top" FontSize="15"/>
+                        <CheckBox Content="{Binding SignatureSettingsText}" IsChecked="{Binding SignatureM}" Margin="5,40,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="15"/>
+                        <CheckBox Content="{Binding EvrizmSettingsText}" IsChecked="{Binding EvrizmM}" Margin="5,70,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="15"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding CountThreadSettingsText}" VerticalAlignment="Bottom" TextAlignment="Center" FontSize="13" HorizontalAlignment="Left" Margin="5,0,0,14.6" Width="125"/>
                         <TextBox PreviewTextInput="IsTextAllowed" Text="{Binding CountOfThread}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="70" VerticalContentAlignment="Center" Margin="5,0,5,23" Background="#FFB3E4DF"/>
                     </Grid>
                 </Border>
-                <Label Content="Сканирование файлов" VerticalContentAlignment="Bottom" FontSize="16" Grid.Column="1" Margin="459,0,58.4,316.8"/>
+                <Label Content="{Binding ScanSettingsText}" VerticalContentAlignment="Bottom" FontSize="16" Grid.Column="1" Margin="459,0,58.4,316.8"/>
                 <TextBlock Height="43" Margin="10,32,694.4,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="auto" Text="{Binding SettingsLanguageText}" FontSize="16" Grid.ColumnSpan="2"/>
                 <ComboBox ItemsSource="{Binding ItemsFile}" SelectedIndex="{Binding IndexLangItem}" Grid.Column="1" HorizontalAlignment="Left" Margin="17,32,0,0" VerticalAlignment="Top" Width="99"/>
+                <CheckBox VerticalContentAlignment="Center" IsChecked="{Binding Sound}" HorizontalContentAlignment="Left" Content="{Binding SoundSettingsText}" Height="43" FontSize="15" Margin="10,80,590.4,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
             </Grid>
         </Border>
 

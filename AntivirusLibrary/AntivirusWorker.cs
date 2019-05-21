@@ -24,13 +24,13 @@ namespace AntivirusLibrary
         /// 
         /// </summary>
         /// <param name="ExceptionFiles">Список содержащий загруженные исключения</param>
-        public AntivirusWorker(List<ExceptionFile> ExceptionFiles,int CountThread, string signatureString)
+        public AntivirusWorker(List<ExceptionFile> exceptionFiles,int countThread, string signatureString)
         {
             DangerFiles = new List<FileWithSignature>();
             DangerProcess = new List<ProcessDange>();
             ClearProcess = new List<Process>();
-            this.ExceptionFiles = ExceptionFiles;
-            CountThread = CountThread;
+            this.ExceptionFiles = exceptionFiles;
+            CountThread = countThread;
             Counter = new CounterWorker();
             SignatureString = signatureString;
             SetDefaultSettings();
@@ -102,7 +102,7 @@ namespace AntivirusLibrary
             //Counter = new CounterWorker((double)listLength);
             Counter.SetMaxValue((double)listLength, Enams.ResetStatus.Reset);
             SignaturesArray = new FileWithSignature[CountThread][];
-            for (int i = 0; i < SignaturesArray.Length; i++)
+            for (int i = 0; i < SignaturesArray.Length-1; i++)
             {
                 SignaturesArray[i] = ListWithPath.GetRange(0, listLength / SignaturesArray.Length).Select(x => new VirusFile(x)).ToArray();
                 ListWithPath.RemoveRange(0, SignaturesArray[i].Length);
@@ -114,7 +114,8 @@ namespace AntivirusLibrary
                 //}
                 //ListWithPath.RemoveRange(0, SignaturesArray[i].Length);
             }
-            SignaturesArray = SignaturesArray.Select(x => x.Where(y => y.Signature != null).ToArray()).ToArray();
+            SignaturesArray[SignaturesArray.Length-1] = ListWithPath.GetRange(0, ListWithPath.Count).Select(x => new VirusFile(x)).ToArray();
+            SignaturesArray = SignaturesArray.Select(x => x.Where(y => y.Signature != null).ToArray()).Where(z=>z.Length!=0).ToArray();
             Workers = new VirusWorker[SignaturesArray.Length];
             for (int i = 0; i < SignaturesArray.Length; i++)
             {
@@ -207,8 +208,9 @@ namespace AntivirusLibrary
                                     if (SoundTurn)
                                         Console.Beep();
                                 }
-                                else
-                                    ClearProcess.Add(process);
+                                else if (signatureM&&evrimM)
+                                        ClearProcess.Add(process);
+                                    
                             }
                             else if (FileValidater.VerifyAuthenticodeSignature(process.MainModule.FileName))
                             {
@@ -248,9 +250,10 @@ namespace AntivirusLibrary
         }
         public void KillProcess(ProcessDange process)
         {
+            string processName = process.Process.ProcessName;
             process.KillProcess();
             DangerProcess.RemoveAll(x => x.Process == null);
-            ClearProcess.RemoveAll(x => x.ProcessName == process.Process.ProcessName);
+            ClearProcess.RemoveAll(x => x.ProcessName == processName);
             FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
         }
         public void AddInDangerFile(object sender, FindDangerEventArgs e)
@@ -270,8 +273,34 @@ namespace AntivirusLibrary
             public bool SoundTurn { get; set; }
             public bool CloseProcessTurn { get; set; }
             public bool AutoDeleteVirus { get; set; }
-            public bool EvrizmM { get; set; }
-            public bool SignatureM { get; set; }
+            private bool evrimM;
+            public bool EvrizmM
+            {
+                get
+                {
+                    return evrimM;
+                }
+                set
+                {
+                    evrimM = value;
+                    DangerProcess = new List<ProcessDange>();
+                    FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false));
+                }
+            }
+            private bool signatureM;
+            public bool SignatureM
+            {
+                get
+                {
+                    return signatureM;
+                }
+                set
+                {
+                    signatureM = value;
+                    DangerProcess = new List<ProcessDange>();
+                    FindDangerProcessEvent?.Invoke(this, new AddDangerProcessEventArgs(false)); 
+                }
+            }
         #endregion
         private void SetDefaultSettings(bool soundTurn = true, bool closeProcessTurn = false, bool evrizmM = true, bool signatureM = true, bool autoDeleteVirus = false)
         {

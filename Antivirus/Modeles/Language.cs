@@ -15,8 +15,6 @@ namespace Antivirus.Modeles
     {
         public string LanguageName { get; set; }
         public string SettingsLanguageText { get; set; }
-
-
         public string DangerFileButtonText { get; set; }
         public string ExceptionFileButtonText { get; set; }
         public string DangerProcessButtonText { get; set; }
@@ -29,7 +27,17 @@ namespace Antivirus.Modeles
         public string AddCotalogInExceptionButtonContext { get; set; }
         public string AddFileInExceptionButtonContext { get; set; }
         public string DeleteAllButtonContext { get; set; }
-
+        public string TitleOfMessage { get; set; }
+        public string MessageInMes { get; set; }
+        public string FirstButtonContext { get; set; }
+        public string SecondButtonContext { get; set; }
+        public string ScanSettingsText { get; set; }
+        public string AutoDeleteVirusFileSetttingsText { get; set; }
+        public string SignatureSettingsText { get; set; }
+        public string EvrizmSettingsText { get; set; }
+        public string CountThreadSettingsText { get; set; }
+        public string SoundSettingsText { get; set; }
+        public string SendVirusContent { get; set; }
         public Language()
         {
 
@@ -53,7 +61,18 @@ namespace Antivirus.Modeles
                         string scanFileButtonContext,
                         string addCotalogInExceptionButtonContext,
                         string addFileInExceptionButtonContext,
-                        string deleteAllButtonContext)
+                        string deleteAllButtonContext,
+                        string titleOfMessage,
+                        string messageInMes,
+                        string firstButtonContext,
+                        string secondButtonContext,
+                        string scanSettingsText,
+                        string autoDeleteVirusFileSetttingsText,
+                        string signatureSettingsText,
+                        string evrizmSettingsText,
+                        string countThreadSettingsText,
+                        string soundSettingsText, 
+                        string sendVirusContent)
         {
             LanguageName = languageName;
             SettingsLanguageText = settingsLanguageText;
@@ -69,6 +88,17 @@ namespace Antivirus.Modeles
             AddCotalogInExceptionButtonContext = addCotalogInExceptionButtonContext;
             AddFileInExceptionButtonContext = addFileInExceptionButtonContext;
             DeleteAllButtonContext = deleteAllButtonContext;
+            TitleOfMessage = titleOfMessage;
+            MessageInMes = messageInMes;
+            FirstButtonContext = firstButtonContext;
+            SecondButtonContext = secondButtonContext;
+            ScanSettingsText = scanSettingsText;
+            AutoDeleteVirusFileSetttingsText = autoDeleteVirusFileSetttingsText;
+            SignatureSettingsText = signatureSettingsText;
+            EvrizmSettingsText = evrizmSettingsText;
+            CountThreadSettingsText = countThreadSettingsText;
+            SoundSettingsText = soundSettingsText;
+            SendVirusContent = sendVirusContent;
         }
 
         public static Language LoadLanguageFile(string path)
@@ -106,7 +136,7 @@ namespace Antivirus.Modeles
 
         public static void SaveLanguageEn()
         {
-            Language ExampleLanguage = new Language("En","Language","Virus","Exceptions","Process","Stop","Delete","Add in exception", "Kill process","Scan catalog","Scan file","Add catalog", "Add file","Delete all");
+            Language ExampleLanguage = new Language("En","Language","Virus","Exceptions","Process","Stop","Delete","Add in exception", "Kill process","Scan catalog","Scan file","Add catalog", "Add file","Delete all","Cansel scaning","Cansel scaning?","Yes","No","File scaning","Auto delete file","Signature method","Evrizm method","Count of thread for scaning","Sound","Send virus");
             XmlSerializer formatter = new XmlSerializer(typeof(Language));
             using (Stream stream = new FileStream(Environment.CurrentDirectory + @"\Language\"+"En.lang", FileMode.OpenOrCreate))
             {
@@ -116,7 +146,7 @@ namespace Antivirus.Modeles
 
         public static void SaveLanguageRu()
         {
-            Language ExampleLanguage = new Language("Ru","Язык","Вирусы","Исключения","Процессы","Остановить","Удалить","Добавить в исключение","Завершить","Проверка каталога","Проверка файла","Добавить каталог", "Добавить файл","Удалить все");
+            Language ExampleLanguage = new Language("Ru","Язык","Вирусы","Исключения","Процессы","Остановить","Удалить","Добавить в исключение","Завершить","Проверка каталога","Проверка файла","Добавить каталог", "Добавить файл","Удалить все", "Отмена сканирования", "Отменить сканирование?","Да","Нет", "Сканирование файлов", "Авто удаление файл", "Сигнатурная методика", "Эвристическая методика", "Количество потоков на выполнение", "Воспроизведение звука","Отправить вирус");
             XmlSerializer formatter = new XmlSerializer(typeof(Language));
             using (Stream stream = new FileStream(Environment.CurrentDirectory + @"\Language\" + "Ru.lang", FileMode.OpenOrCreate))
             {
@@ -128,7 +158,9 @@ namespace Antivirus.Modeles
         {
             Language ExampleLanguage = new Language("Language Name","Language label text","Context for button whitch open virus page","Context for button whitch open exception page"
                 ,"Context for button whitch open danger process","Stop scaning button","Delete element on list","Add element on list", "Kill element on list","Context for scan catalog button",
-                "Context for scan file button","Context for add cotalog in exception","Context for add file in exception","Delete all element in list");
+                "Context for scan file button","Context for add cotalog in exception","Context for add file in exception","Delete all element in list","Title for messageBox",
+                "MessageBox message","MessageBox first button context","MessageBox second button context","Text for scan block settings","Text for auto delete settings","Text for signature serch settings",
+                "Text for evrizm serch settings","Text for count of thread settings","Text for sound settings","Context for button whitch send virus on server");
             XmlSerializer formatter = new XmlSerializer(typeof(Language));
             using (Stream stream = new FileStream(Environment.CurrentDirectory+@"\Lenguage settings example.txt", FileMode.OpenOrCreate))
             {

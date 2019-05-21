@@ -25,6 +25,14 @@ namespace Antivirus.Modeles
             }
         }
 
+
+
+        public bool AutoVirusDelete { get;set; }
+        public bool SignatureM { get; set; }
+        public bool EvrizmM { get; set; }
+        public int CountOfThread { get; set; }
+        public bool Sound { get; set; }
+
         public Settings()
         {
 
@@ -35,12 +43,15 @@ namespace Antivirus.Modeles
             if (File.Exists(path))
             {
                 Settings ReadSettingCFG = LoadSettings(path);
-                InterfaceLanguage = ReadSettingCFG.InterfaceLanguage;
+                interfaceLanguage = ReadSettingCFG.InterfaceLanguage;
+                AutoVirusDelete = ReadSettingCFG.AutoVirusDelete;
+                SignatureM = ReadSettingCFG.SignatureM;
+                EvrizmM = ReadSettingCFG.EvrizmM;
+                CountOfThread = ReadSettingCFG.CountOfThread;
+                Sound = ReadSettingCFG.Sound;
             }
             else
-            {
-                InterfaceLanguage = "En";
-            }
+                CreateNewSettings();
         }
 
         public static Settings LoadSettings(string path)
@@ -62,18 +73,28 @@ namespace Antivirus.Modeles
             return ReadSettingsCFG;
         }
 
-        private void CreateNewSettings()
-        {
-            InterfaceLanguage = "En";
-        }
 
         public void SaveSettings(string path)
         {
+            if (File.Exists(path))
+                File.Delete(path);
             XmlSerializer formatter = new XmlSerializer(typeof(Settings));
             using (Stream stream = new FileStream(path, FileMode.OpenOrCreate))
             {
                 formatter.Serialize(stream, this);
             }
         }
+
+        private void CreateNewSettings()
+        {
+            InterfaceLanguage = "En";
+            AutoVirusDelete = false;
+            SignatureM = true;
+            EvrizmM = true;
+            CountOfThread = 1;
+            Sound = true;
+        }
+
+        private string pathOfSettings;
     }
 }

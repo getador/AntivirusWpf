@@ -4,8 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
+using System.Security;
+using System.Security.Cryptography;
+using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,10 +30,7 @@ namespace Antivirus.ViewModeles
             virusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
             worker = new SettingsWorker();
             Pages = new List<Page>();
-            
-            //VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
-            //VirusList.Add(new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"));
-            //SettingsLanguageText = worker.UsedLanguage.SettingsLanguageText;
+            ServerIp = "127.0.0.1";
             ChangeInterfaceLanguage();
             indexLangItem = -1;
             ExceptionList = worker.ExceptionsWork.ExceptionFiles;
@@ -41,11 +43,20 @@ namespace Antivirus.ViewModeles
                     break;
                 }
             }
-            //ItemsFile = worker.SaveFileName;
-            //IndexLangItem = -1;
+            
             CreteAntiwirusWorker();
+            PropertyOfSettings();
             CreateVirusPage();
             CreateDangerProcessPage();
+        }
+
+        private void PropertyOfSettings()
+        {
+            CountOfThread = worker.SettingsLoaded.CountOfThread.ToString();
+            AutoVirusDelete = worker.SettingsLoaded.AutoVirusDelete;
+            EvrizmM = worker.SettingsLoaded.EvrizmM;
+            SignatureM = worker.SettingsLoaded.SignatureM;
+            Sound = worker.SettingsLoaded.Sound;
         }
 
         private void CreteAntiwirusWorker()
@@ -85,13 +96,19 @@ namespace Antivirus.ViewModeles
             StopButtonContext = worker.UsedLanguage.StopButtonContext;
             DeleteButtonContext = worker.UsedLanguage.DeleteButtonContext;
             AddInExceptionButtonContext = worker.UsedLanguage.AddInExceptionButtonContext;
-            ////((Pages.VirusPage)Pages.Where(x=>x.Name== "VirusPageW").FirstOrDefault()).
             KillProcessButtonContext = worker.UsedLanguage.KillProcessButtonContext;
             ScanCotalogButtonContext = worker.UsedLanguage.ScanCotalogButtonContext;
             ScanFileButtonContext = worker.UsedLanguage.ScanFileButtonContext;
             AddCotalogInExceptionButtonContext = worker.UsedLanguage.AddCotalogInExceptionButtonContext;
             AddFileInExceptionButtonContext = worker.UsedLanguage. AddFileInExceptionButtonContext;
             DeleteAllButtonContext = worker.UsedLanguage.DeleteAllButtonContext;
+            ScanSettingsText = worker.UsedLanguage.ScanSettingsText;
+            AutoDeleteVirusFileSetttingsText = worker.UsedLanguage.AutoDeleteVirusFileSetttingsText;
+            SignatureSettingsText = worker.UsedLanguage.SignatureSettingsText;
+            EvrizmSettingsText = worker.UsedLanguage.EvrizmSettingsText;
+            CountThreadSettingsText = worker.UsedLanguage.CountThreadSettingsText;
+            SoundSettingsText = worker.UsedLanguage.SoundSettingsText;
+            SendVirusContent = worker.UsedLanguage.SendVirusContent;
         }
 
         #region CreatePages
@@ -315,6 +332,152 @@ namespace Antivirus.ViewModeles
                 OnPropertyChanged("DeleteAllButtonContext");
             }
         }
+
+
+        private string scanSettingsText;
+        public string ScanSettingsText
+        {
+            get { return scanSettingsText; }
+            set
+            {
+                if (value == scanSettingsText)
+                    return;
+                scanSettingsText = value;
+                OnPropertyChanged("ScanSettingsText");
+            }
+        }
+
+        private string autoDeleteVirusFileSetttingsText;
+        public string AutoDeleteVirusFileSetttingsText
+        {
+            get { return autoDeleteVirusFileSetttingsText; }
+            set
+            {
+                if (value == autoDeleteVirusFileSetttingsText)
+                    return;
+                autoDeleteVirusFileSetttingsText = value;
+                OnPropertyChanged("AutoDeleteVirusFileSetttingsText");
+            }
+        }
+
+        private string signatureSettingsText;
+        public string SignatureSettingsText
+        {
+            get { return signatureSettingsText; }
+            set
+            {
+                if (value == signatureSettingsText)
+                    return;
+                signatureSettingsText = value;
+                OnPropertyChanged("SignatureSettingsText");
+            }
+        }
+
+        private string evrizmSettingsText;
+        public string EvrizmSettingsText
+        {
+            get { return evrizmSettingsText; }
+            set
+            {
+                if (value == evrizmSettingsText)
+                    return;
+                evrizmSettingsText = value;
+                OnPropertyChanged("EvrizmSettingsText");
+            }
+        }
+
+        private string countThreadSettingsText;
+        public string CountThreadSettingsText
+        {
+            get { return countThreadSettingsText; }
+            set
+            {
+                if (value == countThreadSettingsText)
+                    return;
+                countThreadSettingsText = value;
+                OnPropertyChanged("CountThreadSettingsText");
+            }
+        }
+
+        private string soundSettingsText;
+        public string SoundSettingsText
+        {
+            get { return soundSettingsText; }
+            set
+            {
+                if (value == soundSettingsText)
+                    return;
+                soundSettingsText = value;
+                OnPropertyChanged("SoundSettingsText");
+            }
+        }
+
+        private string sendVirusContent;
+        public string SendVirusContent
+        {
+            get { return sendVirusContent; }
+            set
+            {
+                if (value == sendVirusContent)
+                    return;
+                sendVirusContent = value;
+                OnPropertyChanged("SendVirusContent");
+            }
+        }
+        #region LanguageStopScan
+        private string titleOfMessage;
+        public string TitleOfMessage
+        {
+            get { return titleOfMessage; }
+            set
+            {
+                if (value == titleOfMessage)
+                    return;
+                titleOfMessage = value;
+                OnPropertyChanged("TitleOfMessage");
+            }
+        }
+
+        private string messageInMes;
+        public string MessageInMes
+        {
+            get { return messageInMes; }
+            set
+            {
+                if (value == messageInMes)
+                    return;
+                messageInMes = value;
+                OnPropertyChanged("MessageInMes");
+            }
+        }
+
+        private string firstButtonContext;
+        public string FirstButtonContext
+        {
+            get { return firstButtonContext; }
+            set
+            {
+                if (value == firstButtonContext)
+                    return;
+                firstButtonContext = value;
+                OnPropertyChanged("FirstButtonContext");
+            }
+        }
+
+        private string secondButtonContext;
+        public string SecondButtonContext
+        {
+            get { return secondButtonContext; }
+            set
+            {
+                if (value == secondButtonContext)
+                    return;
+                secondButtonContext = value;
+                OnPropertyChanged("SecondButtonContext");
+            }
+        }
+        #endregion
+
         #endregion
 
         #region settingsValue
@@ -324,10 +487,10 @@ namespace Antivirus.ViewModeles
             get { return autoVirusDelete; }
             set
             {
-                if (value == autoVirusDelete)
-                    return;
                 autoVirusDelete = value;
                 antivirusWorker.AutoDeleteVirus = autoVirusDelete;
+                worker.SettingsLoaded.AutoVirusDelete = autoVirusDelete;
+                worker.SettingsLoaded.SaveSettings(Environment.CurrentDirectory + @"\config.cfg");
                 OnPropertyChanged("AutoVirusDelete");
             }
         }
@@ -338,10 +501,10 @@ namespace Antivirus.ViewModeles
             get { return signatureM; }
             set
             {
-                if (value == signatureM)
-                    return;
                 signatureM = value;
                 antivirusWorker.SignatureM = signatureM;
+                worker.SettingsLoaded.SignatureM = signatureM;
+                worker.SettingsLoaded.SaveSettings(Environment.CurrentDirectory + @"\config.cfg");
                 OnPropertyChanged("SignatureM");
             }
         }
@@ -352,10 +515,10 @@ namespace Antivirus.ViewModeles
             get { return evrizmM; }
             set
             {
-                if (value == evrizmM)
-                    return;
                 evrizmM = value;
                 antivirusWorker.EvrizmM = evrizmM;
+                worker.SettingsLoaded.EvrizmM = evrizmM;
+                worker.SettingsLoaded.SaveSettings(Environment.CurrentDirectory + @"\config.cfg");
                 OnPropertyChanged("EvrizmM");
             }
         }
@@ -366,11 +529,25 @@ namespace Antivirus.ViewModeles
             get { return countOfThread; }
             set
             {
-                if (value == countOfThread)
-                    return;
                 countOfThread = value;
                 antivirusWorker.CountThread = Convert.ToInt32(countOfThread);
+                worker.SettingsLoaded.CountOfThread = Convert.ToInt32(countOfThread);
+                worker.SettingsLoaded.SaveSettings(Environment.CurrentDirectory + @"\config.cfg");
                 OnPropertyChanged("CountOfThread");
+            }
+        }
+
+        private bool sound;
+        public bool Sound
+        {
+            get { return sound; }
+            set
+            {
+                sound = value;
+                antivirusWorker.SoundTurn = sound;
+                worker.SettingsLoaded.Sound = sound;
+                worker.SettingsLoaded.SaveSettings(Environment.CurrentDirectory + @"\config.cfg");
+                OnPropertyChanged("Sound");
             }
         }
         #endregion
@@ -632,6 +809,8 @@ namespace Antivirus.ViewModeles
         }
         #endregion
 
+        
+
         private List<AntivirusLibrary.Abstracts.FileWithSignature> virusList;
         public List<AntivirusLibrary.Abstracts.FileWithSignature> VirusList
         {
@@ -746,20 +925,6 @@ namespace Antivirus.ViewModeles
 
         public void GetUpdateFile(object sender, AntivirusLibrary.Events.FileCheckEventArgs e)
         {
-            //AntivirusLibrary.AntivirusWorker work = (AntivirusLibrary.AntivirusWorker)sender;
-            //VirusList = work.DangerFiles;
-
-
-            ////List<AntivirusLibrary.Abstracts.FileWithSignature> newList = new List<AntivirusLibrary.Abstracts.FileWithSignature>();
-            ////if (antivirusWorker.DangerFiles.Count != 0)
-            ////{
-            ////    for (int i = 0; i < antivirusWorker.DangerFiles.Count; i++)
-            ////    {
-            ////        newList.Add((AntivirusLibrary.Abstracts.FileWithSignature)antivirusWorker.DangerFiles[i].Clone());
-            ////    }
-            ////}
-
-            ////VirusList = newList;
             List<AntivirusLibrary.Abstracts.FileWithSignature> newList;
             if (e.State)
                 newList = new List<AntivirusLibrary.Abstracts.FileWithSignature>(virusList.Select(x => (AntivirusLibrary.Abstracts.FileWithSignature)x.Clone()));
@@ -780,12 +945,6 @@ namespace Antivirus.ViewModeles
             }
 
             VirusList = newList;
-
-            //VirusList = new List<AntivirusLibrary.Abstracts.FileWithSignature>()
-            //{
-            //   new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt"),
-            //   new AntivirusLibrary.Files.VirusFile(@"C:\Users\Слава\Desktop\Новый текстовый документ (2).txt")
-            //};
         }
 
 
@@ -847,6 +1006,193 @@ namespace Antivirus.ViewModeles
                 OnPropertyChanged("MaxStatusValue");
             }
         }
+        #endregion
+
+        #region Server work
+        private string serverIp;
+        public string ServerIp
+        {
+            get { return serverIp; }
+            set
+            {
+                serverIp = value;
+                try
+                {
+                    socketForUpdate = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    socketForAddVirus = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    socketForUpdate.Connect(serverIp, 5555);
+                    socketForAddVirus.Connect(serverIp, 5556);
+                    Task.Run(() => GetFromServer());
+                }
+                catch (Exception)
+                {
+                }
+                OnPropertyChanged("ServerIp");
+            }
+        }
+
+        public Socket socketForUpdate = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        public Socket socketForAddVirus = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private bool openToWrite = false;
+        private void GetFromServer()
+        {
+            while (socketForUpdate.Connected)
+            {
+                if (antivirusWorker != null)
+                {
+                    try
+                    {
+                        byte[] buffer = Encoding.UTF8.GetBytes("#U");
+                        socketForUpdate.Send(buffer);
+                        int amount_of_received_data = 0;
+                        buffer = new byte[50];
+                        socketForUpdate.Receive(buffer);
+                        int length = int.Parse(Encoding.UTF8.GetString(buffer));
+                        byte[] bufferWithHash = new byte[length];
+                        if (buffer.All(x => x == 0))
+                        {
+                            throw new Exception();
+                        }
+                        else
+                        {
+                            byte[] callNewBuffer = Encoding.UTF8.GetBytes("#NE");
+                            socketForUpdate.Send(callNewBuffer);
+                            while (amount_of_received_data < length)
+                            {
+                                int received = socketForUpdate.Receive(bufferWithHash, amount_of_received_data, length - amount_of_received_data, SocketFlags.None);
+                                if (received == 0)
+                                {
+                                    throw new Exception();
+                                }
+                                amount_of_received_data += received;
+                            }
+                            string message = Encoding.UTF8.GetString(bufferWithHash).Replace("\0", "");
+                            string[] arrayOfHash = message.Replace("\r", "").Split('\n');
+                            string stringWithVirusHash;
+                            if (File.Exists(Directory.GetCurrentDirectory() + @"\hashlid.hash"))
+                            {
+                                stringWithVirusHash = GetSignatureFile(Environment.CurrentDirectory + @"\hashlid.hash");
+
+                                while (openToWrite)
+                                {
+
+                                }
+                                openToWrite = true;
+                                using (StreamWriter stream = new StreamWriter(Directory.GetCurrentDirectory() + @"\hashlid.hash",
+                                true,
+                                Encoding.UTF8))
+                                {
+                                    for (int i = 0; i < arrayOfHash.Length; i++)
+                                    {
+                                        if (!stringWithVirusHash.Contains(arrayOfHash[i]) && arrayOfHash[i] != string.Empty)
+                                        {
+                                            stream.WriteLine(arrayOfHash[i]);
+                                        }
+                                    }
+                                }
+                                openToWrite = false;
+                            }
+                            else
+                            {
+                                using (StreamWriter stream = new StreamWriter(Directory.GetCurrentDirectory() + @"\hashlid.hash",
+                                true,
+                                Encoding.UTF8))
+                                {
+                                    stream.WriteLine(string.Join("\r\n", arrayOfHash));
+                                    //for (int i = 0; i < arrayOfHash.Length; i++)
+                                    //{
+
+                                    //    stream.WriteLine(arrayOfHash[i]);
+                                    //}
+                                }
+                            }
+
+                            antivirusWorker.SignatureString = GetSignatureFile(Environment.CurrentDirectory + @"\hashlid.hash");
+
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        socketForUpdate.Disconnect(false);
+                        socketForAddVirus.Disconnect(false);
+                        socketForUpdate.Close();
+                        socketForAddVirus.Close();
+                    }
+                }
+
+                Thread.Sleep(60000);
+            }
+        }
+
+        private void SendVirusMenu_Click(object sender, EventArgs e)
+        {
+            if (socketForAddVirus.Connected)
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    string sendOnServer = string.Empty;
+
+                    var permission = new FileIOPermission(FileIOPermissionAccess.Write, ofd.FileName);
+                    var permissionSet = new PermissionSet(PermissionState.None);
+                    permissionSet.AddPermission(permission);
+                    if (permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet))
+                    {
+                        //try
+                        //{
+                        using (var md5 = MD5.Create())
+                        {
+                            using (var stream = File.OpenRead(ofd.FileName))
+                            {
+                                bool find = false;
+                                string hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
+                                if (antivirusWorker.SignatureString != null)
+                                {
+                                    if (antivirusWorker.SignatureString.Contains(hash))
+                                    {
+                                        //MessageBox.Show("Данная сигнатура уже существует в базе");
+                                        find = true;
+                                    }
+                                }
+                                if (!find)
+                                {
+                                    while (openToWrite)
+                                    {
+
+                                    }
+                                    openToWrite = true;
+                                    using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\hashlid.hash",
+                                    true,
+                                    Encoding.UTF8))
+                                    {
+                                        sw.WriteLine(hash);
+                                    }
+                                    openToWrite = false;
+                                    sendOnServer = $"#V{hash}";
+                                }
+                            }
+                        }
+                        //}
+                        //catch (IOException)
+                        //{
+
+                        //}
+                        //catch (Exception)
+                        //{
+
+                        //}
+                    }
+                    if (sendOnServer != string.Empty)
+                    {
+                        byte[] buffer = Encoding.UTF8.GetBytes(sendOnServer);
+                        socketForAddVirus.Send(buffer);
+                    }
+                }
+            }
+            else
+                MessageBox.Show("Необходимо подключение к серверу");
+        }
+
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
