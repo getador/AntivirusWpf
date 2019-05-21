@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ExceptionPage" Name="ExceptionPageW">
 
-    <Grid>
+    <Grid Background="#FF50E792">
         <Grid.Resources>
             <Style x:Key="CustromListItemButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">
@@ -46,7 +46,7 @@
                 <Button HorizontalAlignment="Left" Style="{StaticResource CustromListItemButton}" Command="{Binding DeleteAllException}" Content="{Binding DeleteAllButtonContext}" Width="100" Margin="270,10,0,10"/>
             </Grid>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,3,20,45" Grid.Row="1">
+        <ScrollViewer Background="#FFEEE6E6" VerticalScrollBarVisibility="Auto" Margin="20,3,20,45" Grid.Row="1">
             <Grid>
                 <ListView ItemsSource="{Binding ExceptionList}" Foreground="AliceBlue" Tag="{Binding DeleteButtonContext}">
                     <ListView.Background>

@@ -1123,74 +1123,79 @@ namespace Antivirus.ViewModeles
                 Thread.Sleep(60000);
             }
         }
-
-        private void SendVirusMenu_Click(object sender, EventArgs e)
+        public ICommand SendVirusMenu_Click
         {
-            if (socketForAddVirus.Connected)
+            get
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                if (ofd.ShowDialog() == DialogResult.OK)
+                return new ButtonViewCommand((obj) =>
                 {
-                    string sendOnServer = string.Empty;
-
-                    var permission = new FileIOPermission(FileIOPermissionAccess.Write, ofd.FileName);
-                    var permissionSet = new PermissionSet(PermissionState.None);
-                    permissionSet.AddPermission(permission);
-                    if (permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet))
+                    if (socketForAddVirus.Connected)
                     {
-                        //try
-                        //{
-                        using (var md5 = MD5.Create())
+                        OpenFileDialog ofd = new OpenFileDialog();
+                        if (ofd.ShowDialog() == DialogResult.OK)
                         {
-                            using (var stream = File.OpenRead(ofd.FileName))
-                            {
-                                bool find = false;
-                                string hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
-                                if (antivirusWorker.SignatureString != null)
-                                {
-                                    if (antivirusWorker.SignatureString.Contains(hash))
-                                    {
-                                        //MessageBox.Show("Данная сигнатура уже существует в базе");
-                                        find = true;
-                                    }
-                                }
-                                if (!find)
-                                {
-                                    while (openToWrite)
-                                    {
+                            string sendOnServer = string.Empty;
 
-                                    }
-                                    openToWrite = true;
-                                    using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\hashlid.hash",
-                                    true,
-                                    Encoding.UTF8))
+                            var permission = new FileIOPermission(FileIOPermissionAccess.Write, ofd.FileName);
+                            var permissionSet = new PermissionSet(PermissionState.None);
+                            permissionSet.AddPermission(permission);
+                            if (permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet))
+                            {
+                                //try
+                                //{
+                                using (var md5 = MD5.Create())
+                                {
+                                    using (var stream = File.OpenRead(ofd.FileName))
                                     {
-                                        sw.WriteLine(hash);
+                                        bool find = false;
+                                        string hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
+                                        if (antivirusWorker.SignatureString != null)
+                                        {
+                                            if (antivirusWorker.SignatureString.Contains(hash))
+                                            {
+                                                //MessageBox.Show("Данная сигнатура уже существует в базе");
+                                                find = true;
+                                            }
+                                        }
+                                        if (!find)
+                                        {
+                                            while (openToWrite)
+                                            {
+
+                                            }
+                                            openToWrite = true;
+                                            using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\hashlid.hash",
+                                            true,
+                                            Encoding.UTF8))
+                                            {
+                                                sw.WriteLine(hash);
+                                            }
+                                            openToWrite = false;
+                                            sendOnServer = $"#V{hash}";
+                                        }
                                     }
-                                    openToWrite = false;
-                                    sendOnServer = $"#V{hash}";
                                 }
+                                //}
+                                //catch (IOException)
+                                //{
+
+                                //}
+                                //catch (Exception)
+                                //{
+
+                                //}
+                            }
+                            if (sendOnServer != string.Empty)
+                            {
+                                byte[] buffer = Encoding.UTF8.GetBytes(sendOnServer);
+                                socketForAddVirus.Send(buffer);
                             }
                         }
-                        //}
-                        //catch (IOException)
-                        //{
-
-                        //}
-                        //catch (Exception)
-                        //{
-
-                        //}
                     }
-                    if (sendOnServer != string.Empty)
-                    {
-                        byte[] buffer = Encoding.UTF8.GetBytes(sendOnServer);
-                        socketForAddVirus.Send(buffer);
-                    }
-                }
+                    //else
+                        //MessageBox.Show("Необходимо подключение к серверу");
+                });
             }
-            else
-                MessageBox.Show("Необходимо подключение к серверу");
         }
 
         #endregion

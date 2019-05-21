@@ -76,7 +76,7 @@ namespace ServerForAntivirus
 
         private static void AddInMainVirusFile()
         {
-            List<string> arrayOfStringInFile = null;
+            List<string> arrayOfStringInFile = new List<string>();
             if (File.Exists(Directory.GetCurrentDirectory() + @"\HashForCheck.vih"))
             {
                 string stringInFile = string.Empty;
@@ -129,6 +129,8 @@ namespace ServerForAntivirus
                     }
                 }
             }
+            else
+                File.Create(Directory.GetCurrentDirectory() + @"\HashForCheck.vih");
 
             if (arrayOfStringInFile.Count > 0 && !arrayOfStringInFile.All(x => x == ""))
             {
@@ -140,14 +142,6 @@ namespace ServerForAntivirus
                     {
                         stream.WriteLine(arrayOfStringInFile[i]);
                     }
-                }
-            }
-            else
-            {
-                using (StreamWriter stream = new StreamWriter(Directory.GetCurrentDirectory() + @"\HashForCheck.vih",
-                false,
-                Encoding.UTF8))
-                {
                 }
             }
         }
@@ -283,12 +277,14 @@ namespace ServerForAntivirus
             while (true)
             {
                 Socket userSoket = user.UserSocketGetVirus;
-                try
-                {
+                //try
+                //{
                     byte[] buffer = new byte[1024];
                     userSoket.Receive(buffer);
 
                     string message = Encoding.UTF8.GetString(buffer).Replace("\0", "");
+                if (message!=null && message!="")
+                {
                     string HashCode = message.Substring(0, 2);
                     message = message.Remove(0, 2);
                     if (HashCode == "#V")
@@ -322,13 +318,14 @@ namespace ServerForAntivirus
                         //threadForGetVirus.Start(message);
                     }
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine("Был закрыт порт");
-                    userSoket.Disconnect(false);
-                    //serverGetVirusThreads[user.UserThreadIndex].Abort();
-                    break;
-                }
+                //}
+                //catch (Exception)
+                //{
+                //    Console.WriteLine("Был закрыт порт");
+                //    userSoket.Disconnect(false);
+                //    //serverGetVirusThreads[user.UserThreadIndex].Abort();
+                //    break;
+                //}
             }
         }
 

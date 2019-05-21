@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DangerProcessPage" Name="DangerProcessPageW">
 
-    <Grid>
+    <Grid Background="#FFD6EE4D">
         <Grid.Resources>
             <Style x:Key="CustromListItemButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">
@@ -38,7 +38,7 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,20,20,45">
+        <ScrollViewer Background="#FFEEE6E6" VerticalScrollBarVisibility="Auto" Margin="20,20,20,45">
             <Grid>
                 <ListView ItemsSource="{Binding DangerProcessList}" Foreground="AliceBlue" SelectedValuePath="{Binding AddInExceptionButtonContext}" Tag="{Binding KillProcessButtonContext}">
                     <ListView.Background>
