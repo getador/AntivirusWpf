@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntivirusLibrary", "Antivir
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerForAntivirus", "ServerForAntivirus\ServerForAntivirus.csproj", "{6FA3F97E-D60D-4EF7-85B7-586E5A6A6230}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupAntivirusClient", "SetupAntivirusClient\SetupAntivirusClient.vdproj", "{9C826532-CEE0-4838-BE94-9DDB5C58C61E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{6FA3F97E-D60D-4EF7-85B7-586E5A6A6230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FA3F97E-D60D-4EF7-85B7-586E5A6A6230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FA3F97E-D60D-4EF7-85B7-586E5A6A6230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C826532-CEE0-4838-BE94-9DDB5C58C61E}.Debug|Any CPU.ActiveCfg = Debug
+		{9C826532-CEE0-4838-BE94-9DDB5C58C61E}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

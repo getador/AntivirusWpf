@@ -21,6 +21,11 @@ namespace ServerForAntivirus
 
         static void Main(string[] args)
         {
+            if (!InstanceCheck())
+            {
+                Environment.Exit(0);
+            }
+
             AddInMainVirusFile();
 
             transferThread = new Thread(new ThreadStart(TransferHash))
@@ -36,8 +41,8 @@ namespace ServerForAntivirus
             Console.WriteLine("Сервер запущен");
             while (true)
             {
-                //try
-                //{
+                try
+                {
                     Socket socketForUndateThread = socketForUpdate.Accept();
                     Socket socketForGetVirusThread = socketForGetVirus.Accept();
                     Console.WriteLine($"К серверу подключен пользователь {socketForUndateThread.RemoteEndPoint}");
@@ -66,11 +71,11 @@ namespace ServerForAntivirus
                     serverGetVirusThreads.Add(new Thread(ServerWorkGetVirus) { IsBackground = true });
                     serverUpdateThreads[serverUpdateThreads.Count - 1].Start(new UserOnServer(socketForUndateThread,socketForGetVirusThread, serverUpdateThreads.Count - 1));
                     serverGetVirusThreads[serverGetVirusThreads.Count - 1].Start(new UserOnServer(socketForUndateThread, socketForGetVirusThread, serverGetVirusThreads.Count - 1));
-                //}
-                //catch (Exception)
-                //{
+                }
+                catch (Exception)
+                {
 
-                //}
+                }
             }
         }
 
@@ -277,55 +282,55 @@ namespace ServerForAntivirus
             while (true)
             {
                 Socket userSoket = user.UserSocketGetVirus;
-                //try
-                //{
+                try
+                {
                     byte[] buffer = new byte[1024];
                     userSoket.Receive(buffer);
 
                     string message = Encoding.UTF8.GetString(buffer).Replace("\0", "");
-                if (message!=null && message!="")
-                {
-                    string HashCode = message.Substring(0, 2);
-                    message = message.Remove(0, 2);
-                    if (HashCode == "#V")
+                    if (message != null && message != "")
                     {
-                        Console.WriteLine($"Запрос на сохранение хеша - {message}");
-                        string hashInEndFile = string.Empty;
-                        if (File.Exists(Directory.GetCurrentDirectory() + @"\HashWhichTheChecked.vih"))
+                        string HashCode = message.Substring(0, 2);
+                        message = message.Remove(0, 2);
+                        if (HashCode == "#V")
                         {
-                            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + @"\HashWhichTheChecked.vih", Encoding.UTF8))
+                            Console.WriteLine($"Запрос на сохранение хеша - {message}");
+                            string hashInEndFile = string.Empty;
+                            if (File.Exists(Directory.GetCurrentDirectory() + @"\HashWhichTheChecked.vih"))
                             {
-                                hashInEndFile = sr.ReadToEnd();
+                                using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + @"\HashWhichTheChecked.vih", Encoding.UTF8))
+                                {
+                                    hashInEndFile = sr.ReadToEnd();
+                                }
                             }
-                        }
 
-                        if (!hashInEndFile.Contains(message) || hashInEndFile == string.Empty)
-                        {
-                            using (StreamWriter stream = new StreamWriter(Directory.GetCurrentDirectory() + @"\HashForCheck.vih",
-                            true,
-                            Encoding.UTF8))
+                            if (!hashInEndFile.Contains(message) || hashInEndFile == string.Empty)
                             {
-                                stream.WriteLine(message);
-                                Console.WriteLine("Сохранение прошло успешно");
+                                using (StreamWriter stream = new StreamWriter(Directory.GetCurrentDirectory() + @"\HashForCheck.vih",
+                                true,
+                                Encoding.UTF8))
+                                {
+                                    stream.WriteLine(message);
+                                    Console.WriteLine("Сохранение прошло успешно");
+                                }
                             }
+                            else
+                                Console.WriteLine("Произошла ошибка");
+                            //Thread threadForGetVirus = new Thread(ServerGetVirus)
+                            //{
+                            //    IsBackground = true
+                            //};
+                            //threadForGetVirus.Start(message);
                         }
-                        else
-                            Console.WriteLine("Произошла ошибка");
-                        //Thread threadForGetVirus = new Thread(ServerGetVirus)
-                        //{
-                        //    IsBackground = true
-                        //};
-                        //threadForGetVirus.Start(message);
                     }
                 }
-                //}
-                //catch (Exception)
-                //{
-                //    Console.WriteLine("Был закрыт порт");
-                //    userSoket.Disconnect(false);
-                //    //serverGetVirusThreads[user.UserThreadIndex].Abort();
-                //    break;
-                //}
+                catch (Exception)
+                {
+                    //Console.WriteLine("Был закрыт порт");
+                    userSoket.Disconnect(false);
+                    //serverGetVirusThreads[user.UserThreadIndex].Abort();
+                    break;
+                }
             }
         }
 
@@ -384,6 +389,14 @@ namespace ServerForAntivirus
                     break;
                 }
             }
+        }
+
+        static Mutex InstanceCheckMutex;
+        private static bool InstanceCheck()
+        {
+            bool isNew;
+            InstanceCheckMutex = new Mutex(true, "Antivirus server", out isNew);
+            return isNew;
         }
     }
 }

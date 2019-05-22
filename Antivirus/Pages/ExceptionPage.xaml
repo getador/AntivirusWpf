@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ExceptionPage" Name="ExceptionPageW">
 
-    <Grid Background="#FF50E792">
+    <Grid Background="#FF50E792" OpacityMask="#FF50E792">
         <Grid.Resources>
             <Style x:Key="CustromListItemButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">

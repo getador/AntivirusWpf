@@ -8,7 +8,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         x:Class="Antivirus.MainWindow"
         mc:Ignorable="d"
-        Title="Антивирус" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize">
+        Title="Антивирус" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize" Icon="Images/Icon.png">
     <Window.Resources>
         <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
             <Setter Property="Template">
@@ -394,7 +394,7 @@
                             <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                                 <Grid>
                                     <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" RadiusY="5" RadiusX="5"/>
-                                    <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="2,5,2,2"/>
+                                    <TextBlock TextAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="10" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Text="{Binding Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Margin="0,5,0,2"/>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -515,13 +515,7 @@
                     Style="{StaticResource CustromButtonWithRectangle}"/>
             </Grid>
         </Border>
-        <Border x:Name="border3" Background="Yellow" Height="40" Margin="46,421.2,0,-40.4" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
-            <Border.BorderBrush>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="Yellow" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.BorderBrush>
+        <Border x:Name="border3" Background="#FF73DCD2" Height="40" Margin="46,421.2,0,-40.4" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" BorderBrush="#FF73DCD2">
             <Border.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -531,7 +525,11 @@
                 </TransformGroup>
             </Border.RenderTransform>
             <Grid>
-                <TextBox x:Name="textBox" HorizontalAlignment="Center" Margin="-60,8,0,8" Width="90" Height="25" Text="{Binding ServerIp}" VerticalContentAlignment="Center" FontSize="16"/>
+                <TextBox x:Name="textBox" HorizontalAlignment="Center" Margin="-60,8,0,8" Width="90" Height="25" Text="{Binding ServerIp}" VerticalContentAlignment="Center" FontSize="16">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SetIp}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TextBox}}, Path=Text}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
                 <Button Command="{Binding SendVirusMenu_Click}" HorizontalAlignment="Center" Margin="140,0,0,0" Style="{StaticResource CustromButtonWithRectangle}" Width="90" Height="25" Content="{Binding SendVirusContent}"/>
             </Grid>
         </Border>
@@ -576,7 +574,7 @@
         </CheckBox>
         <Button x:Name="button1" Content="Button" Style="{DynamicResource ButtonStyle1}"  Command="{Binding Exit_Click}" HorizontalAlignment="Right" Width="29" Grid.Column="1"/>
         <Button x:Name="button" Command="{Binding Minimalize_Window}" Grid.Column="1" Margin="694.001,0,29.4,0" Style="{DynamicResource ButtonMinimulizerStyle1}"/>
-        <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="349" Margin="0,-349,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="3" Background="#FF99BCB9" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
+        <Border x:Name="border" BorderThickness="1" HorizontalAlignment="Left" Height="205" Margin="0,-349,0,0" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="2" Background="#FF99BCB9" RenderTransformOrigin="0.5,0.5" BorderBrush="#FFD4C8C8">
             <Border.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

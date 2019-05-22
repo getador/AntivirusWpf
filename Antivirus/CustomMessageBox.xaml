@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Antivirus"
         mc:Ignorable="d"
-        Title="CustomMessageBox" Height="200" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="CustomMessageBox" Height="162.4" Width="320.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.Resources>
             <Style x:Key="CustromButtonWithRectangle" TargetType="{x:Type Button}">
@@ -31,7 +31,7 @@
                 </Style.Triggers>
             </Style>
         </Grid.Resources>
-        <Border VerticalAlignment="Top" Height="100" Margin="30,20,30,0">
+        <Border VerticalAlignment="Top" Height="63" Margin="30,20,30.4,0">
             <TextBlock 
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Center"

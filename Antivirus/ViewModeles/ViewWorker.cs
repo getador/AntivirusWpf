@@ -684,7 +684,7 @@ namespace Antivirus.ViewModeles
                         {
                             Task.Run(() =>
                             {
-                                antivirusWorker.ScanFiles(browserDialog.SelectedPath, "*.*");
+                                antivirusWorker.ScanFiles(browserDialog.SelectedPath, "*.*");//"C:\\Users\\Слава\\Desktop\\Учеба\\Delphi\\ОАиП\\лр14(2)\\Win32\\Debug", "*.*");
                             });
 
                         }
@@ -705,7 +705,7 @@ namespace Antivirus.ViewModeles
                         {
                             Task.Run(() =>
                             {
-                                antivirusWorker.ScanFile(openFileDialog.FileName, false);
+                                antivirusWorker.ScanFile(openFileDialog.FileName, true);
                             });
                         }
                     }
@@ -804,6 +804,28 @@ namespace Antivirus.ViewModeles
                     }
                     antivirusWorker.DangerFiles = antivirusWorker.DangerFiles.Where(x => x.Path != null).ToList();
                     GetUpdateFile(this, new AntivirusLibrary.Events.FileCheckEventArgs(false));
+                });
+            }
+        }
+
+        public ICommand SetIp
+        {
+            get
+            {
+                return new ButtonViewCommand((obj) =>
+                {
+                    Task.Run(() => ServerIp = (string)obj);
+                    //try
+                    //{
+                    //    socketForUpdate = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    //    socketForAddVirus = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    //    socketForUpdate.Connect(serverIp, 5555);
+                    //    socketForAddVirus.Connect(serverIp, 5556);
+                    //    Task.Run(() => GetFromServer());
+                    //}
+                    //catch (Exception)
+                    //{
+                    //}
                 });
             }
         }
@@ -1141,9 +1163,9 @@ namespace Antivirus.ViewModeles
                             permissionSet.AddPermission(permission);
                             if (permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet))
                             {
-                                //try
-                                //{
-                                using (var md5 = MD5.Create())
+                                try
+                                {
+                                    using (var md5 = MD5.Create())
                                 {
                                     using (var stream = File.OpenRead(ofd.FileName))
                                     {
@@ -1175,16 +1197,16 @@ namespace Antivirus.ViewModeles
                                         }
                                     }
                                 }
-                                //}
-                                //catch (IOException)
-                                //{
-
-                                //}
-                                //catch (Exception)
-                                //{
-
-                                //}
                             }
+                                catch (IOException)
+                            {
+
+                            }
+                            //catch (Exception)
+                            //{
+
+                            //}
+                        }
                             if (sendOnServer != string.Empty)
                             {
                                 byte[] buffer = Encoding.UTF8.GetBytes(sendOnServer);

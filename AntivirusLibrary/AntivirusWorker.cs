@@ -57,7 +57,7 @@ namespace AntivirusLibrary
                         if (AutoDeleteVirus)
                             fileForCheack.DeleteFile();
                         else
-                            DangerFiles.Add(fileForCheack);
+                            AddInDangerFile(this, new FindDangerEventArgs(fileForCheack));
                         findSignature = true;
                     }
                 }

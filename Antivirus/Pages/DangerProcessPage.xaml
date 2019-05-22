@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DangerProcessPage" Name="DangerProcessPageW">
 
-    <Grid Background="#FFD6EE4D">
+    <Grid Background="#FFD6EE4D" OpacityMask="#FFD6EE4D">
         <Grid.Resources>
             <Style x:Key="CustromListItemButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">
