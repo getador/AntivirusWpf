@@ -94,7 +94,5 @@ namespace Antivirus.Modeles
             CountOfThread = 1;
             Sound = true;
         }
-
-        private string pathOfSettings;
     }
 }

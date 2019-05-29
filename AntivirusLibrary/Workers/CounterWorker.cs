@@ -65,10 +65,6 @@ namespace AntivirusLibrary.Workers
         }
         public void ChengeElement(object sender, FileCheckEventArgs e)
         {
-            if (element>670)
-            {
-                int a = 5;
-            }
             if (e.State)
                 Inc();
             else
